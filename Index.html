@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Julie's Deli and Fuel Stop in Knoxville, TN - Order food and groceries online">
+    <meta name="keywords" content="deli, fuel stop, Knoxville, Tennessee, online ordering, groceries">
+    <meta name="author" content="Julie's Deli and Fuel Stop">
+    <title>Julie's Deli and Fuel Stop</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/react@17/umd/react.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #F8F1E9;
+            margin: 0;
+        }
+        .navbar {
+            background: linear-gradient(to right, #1A252F, #2A3A4A);
+            color: #E8B923;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: #E8B923;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            margin: 0 1rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .navbar a:hover {
+            color: #FFFFFF;
+        }
+        .hero {
+            background-image: url('/images/food-pattern.png');
+            background-color: rgba(26, 37, 47, 0.8);
+            background-blend-mode: overlay;
+            color: #E8B923;
+            text-align: center;
+            padding: 6rem 2rem 4rem;
+            margin-top: 4rem;
+        }
+        .hero h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 3rem;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .hero p {
+            font-size: 1.2rem;
+            font-style: italic;
+            margin: 0.5rem 0;
+        }
+        .qr-code {
+            margin: 1rem auto;
+            display: block;
+        }
+        .qr-caption {
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            color: #E8B923;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .operational-note {
+            background: rgba(248, 241, 233, 0.9);
+            border: 1px solid #E8B923;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem auto;
+            max-width: 600px;
+            color: #1A252F;
+            font-size: 1rem;
+        }
+        .operational-note ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin: 0;
+        }
+        .operational-note li {
+            margin: 0.5rem 0;
+        }
+        .cta-button {
+            background-color: #E8B923;
+            color: #1A252F;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            font-family: 'Cinzel', serif;
+            font-size: 1rem;
+            text-decoration: none;
+            margin: 1rem;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        .cta-button:hover {
+            background-color: #D4A017;
+        }
+        .content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .section {
+            margin: 2rem 0;
+        }
+        .section h2 {
+            font-family: 'Cinzel', serif;
+            color: #1A252F;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .about p {
+            font-size: 1rem;
+            color: #4A4A4A;
+            line-height: 1.6;
+            text-align: center;
+        }
+        .about img {
+            display: block;
+            max-width: 100%;
+            margin: 1rem auto;
+            border: 2px solid #E8B923;
+            border-radius: 5px;
+        }
+        .about .caption {
+            text-align: center;
+            font-style: italic;
+            color: #1A252F;
+            margin-top: 0.5rem;
+        }
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .menu-item {
+            background: #FFFFF0;
+            border: 1px solid #E8B923;
+            border-radius: 5px;
+            padding: 1rem;
+        }
+        .menu-item h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: #1A252F;
+            margin-bottom: 0.5rem;
+        }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.3rem 0;
+        }
+        .item-name {
+            flex: 1;
+            color: #4A4A4A;
+            font-size: 0.9rem;
+        }
+        .item-price {
+            width: 60px;
+            text-align: right;
+            color: #1A252F;
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+        .customization {
+            font-size: 0.8rem;
+            color: #4A4A4A;
+            font-style: italic;
+            margin-top: 0.3rem;
+        }
+        .note, .warning {
+            font-size: 0.8rem;
+            color: #4A4A4A;
+            text-align: center;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+        .warning {
+            color: #A31621;
+            font-weight: 700;
+        }
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .review-card {
+            background: #FFFFF0;
+            border: 1px solid #E8B923;
+            border-radius: 5px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .review-card p {
+            font-size: 0.9rem;
+            color: #4A4A4A;
+            margin: 0.5rem 0;
+        }
+        .review-card .stars {
+            color: #E8B923;
+            font-size: 1.2rem;
+        }
+        .placeholder {
+            background: #FFFFF0;
+            padding: 1rem;
+            border: 1px solid #E8B923;
+            border-radius: 5px;
+            text-align: center;
+            color: #1A252F;
+        }
+        .footer {
+            background: #1A252F;
+            color: #E8B923;
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.9rem;
+        }
+        .footer a {
+            color: #E8B923;
+            text-decoration: none;
+            margin: 0 0.5rem;
+        }
+        .footer a:hover {
+            color: #FFFFFF;
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 0.5rem;
+            }
+            .navbar a {
+                margin: 0.5rem 0;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .hero p {
+                font-size: 1rem;
+            }
+            .section h2 {
+                font-size: 1.5rem;
+            }
+            .operational-note {
+                font-size: 0.9rem;
+                padding: 0.75rem;
+            }
+            .menu-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        function Navbar() {
+            return (
+                <nav className="navbar">
+                    <div className="flex items-center">
+                        <svg className="w-25 h-25 mr-2" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" alt="JFS Logo">
+                            <circle cx="50" cy="50" r="45" fill="#1A252F"/>
+                            <circle cx="50" cy="30" r="15" fill="#E8B923"/>
+                            <rect x="35" y="45" width="30" height="5" fill="#E8B923"/>
+                            <path d="M35 50 H65" stroke="#F8F1E9" stroke-width="2"/>
+                            <text x="50" y="75" font-family="'Cinzel', serif" font-size="25" fill="#E8B923" text-anchor="middle">JFS</text>
+                            <circle cx="50" cy="50" r="45" fill="none" stroke="#F8F1E9" stroke-width="2"/>
+                        </svg>
+                        <span className="font-cinzel text-xl">Julie's Deli</span>
+                    </div>
+                    <div>
+                        <a href="#home">Home</a>
+                        <a href="#menu">Menu</a>
+                        <a href="#grocery">Grocery</a>
+                        <a href="#reviews">Reviews</a>
+                        <a href="#about">About</a>
+                        <a href="#contact">Contact</a>
+                        <a href="#account">Account</a>
+                    </div>
+                </nav>
+            );
+        }
+
+        function Hero() {
+            return (
+                <section className="hero">
+                    <h1>Welcome to Julie's Deli and Fuel Stop</h1>
+                    <p>Delicious meals and convenience in Knoxville, TN</p>
+                    <p>Mon-Fri: 4AM-9PM | Sat: 6AM-6PM | Sun: 9AM-5PM</p>
+                    <a href="#menu" className="cta-button">Order Food</a>
+                    <a href="#grocery" className="cta-button">Shop Groceries</a>
+                    <div>
+                        <svg className="qr-code" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" alt="QR Code to Order Online">
+                            <rect x="0" y="0" width="200" height="200" fill="#1A252F"/>
+                            <rect x="5" y="5" width="190" height="190" fill="#F8F1E9"/>
+                            <rect x="10" y="10" width="20" height="20" fill="#1A252F"/>
+                            <rect x="40" y="10" width="20" height="20" fill="#1A252F"/>
+                            <rect x="10" y="40" width="20" height="20" fill="#1A252F"/>
+                            <rect x="160" y="10" width="20" height="20" fill="#1A252F"/>
+                            <rect x="160" y="40" width="20" height="20" fill="#1A252F"/>
+                            <rect x="10" y="160" width="20" height="20" fill="#1A252F"/>
+                            <rect x="40" y="160" width="20" height="20" fill="#1A252F"/>
+                            <rect x="160" y="160" width="20" height="20" fill="#1A252F"/>
+                            <rect x="2" y="2" width="196" height="196" fill="none" stroke="#E8B923" stroke-width="4"/>
+                            <text x="100" y="190" font-family="'Cinzel', serif" font-size="10" fill="#E8B923" text-anchor="middle">Scan to Visit</text>
+                        </svg>
+                        <p className="qr-caption">Scan to Order Online</p>
+                    </div>
+                </section>
+            );
+        }
+
+        function Reviews() {
+            const [reviews, setReviews] = React.useState([]);
+            const [loading, setLoading] = React.useState(true);
+
+            React.useEffect(() => {
+                fetch('https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJkXjRA-AQXIgRQUNmWuhtVfc&fields=reviews&key=AIzaSyAQQyZkFi5RCq-TydVnG2lHawKm2Mp1_1k')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.result && data.result.reviews) {
+                            setReviews(data.result.reviews.slice(0, 3)); // Display up to 3 reviews
+                        }
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching reviews:', error);
+                        setLoading(false);
+                    });
+            }, []);
+
+            if (loading) {
+                return (
+                    <div className="section">
+                        <h2>What Our Customers Say</h2>
+                        <p className="text-center">Loading reviews...</p>
+                    </div>
+                );
+            }
+
+            if (reviews.length === 0) {
+                return (
+                    <div className="section">
+                        <h2>What Our Customers Say</h2>
+                        <p className="text-center">No reviews available yet. Be the first to leave one!</p>
+                        <p className="text-center mt-4">
+                            <a href="https://www.google.com/maps/place/?q=place_id:ChIJkXjRA-AQXIgRQUNmWuhtVfc" target="_blank" className="text-[#E8B923]">Leave a review on Google</a>
+                        </p>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="section">
+                    <h2>What Our Customers Say</h2>
+                    <div className="reviews-grid">
+                        {reviews.map((review, index) => (
+                            <div key={index} className="review-card">
+                                <p>"{review.text}"</p>
+                                <div className="stars">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
+                                <p>- {review.author_name}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <p className="text-center mt-4">
+                        <a href="https://www.google.com/maps/place/?q=place_id:ChIJkXjRA-AQXIgRQUNmWuhtVfc" target="_blank" className="text-[#E8B923]">See more on Google</a>
+                    </p>
+                </div>
+            );
+        }
+
+        function About() {
+            return (
+                <div className="section about">
+                    <h2>About Us</h2>
+                    <p>Julie's Fuel Stop, located conveniently in Knoxville, Tennessee, is a one-stop-shop offering a wide range of convenience and specialty products. With over 4 decades of experience as Sam and Jerry's Deli and Market, Julie's continues to fulfill diverse needs of the community. From grocery must-haves to satisfying deli delights and refueling options like high-quality gasoline, customers can find what they need and more. Additionally, Julie's Fuel Stop enhances its unique offerings with a smoke shop, beer collection, and novelty items including vapes, providing an enjoyable shopping experience for all.</p>
+                    <img src="/images/storefront.jpg" alt="Julie's Deli and Fuel Stop Storefront" />
+                    <p className="caption">Our storefront in Knoxville, TN</p>
+                    <div className="operational-note">
+                        <ul>
+                            <li><strong>Order Hours:</strong> 5 AM to 6 PM daily</li>
+                            <li><strong>Same-Day Order Cutoff:</strong> 6 PM (no orders accepted after 6 PM)</li>
+                            <li><strong>Order Requirements:</strong> Pickup only, no minimum order</li>
+                            <li><strong>Preparation Times:</strong> Orders prepared between 5 AM and 6 PM</li>
+                        </ul>
+                    </div>
+                </div>
+            );
+        }
+
+        function Menu() {
+            return (
+                <div className="section">
+                    <h2>Our Menu</h2>
+                    <div className="menu-grid">
+                        <div className="menu-item">
+                            <h3>Biscuits</h3>
+                            <div className="item-row"><span className="item-name">Jelly/Butter Biscuit</span><span className="item-price">$1.29</span></div>
+                            <div className="item-row"><span className="item-name">Sausage</span><span className="item-price">$2.29</span></div>
+                            <div className="item-row"><span className="item-name">Sausage Egg*</span><span className="item-price">$2.69</span></div>
+                            <div className="item-row"><span className="item-name">Sausage Egg Cheese*</span><span className="item-price">$3.09</span></div>
+                            <div className="item-row"><span className="item-name">Bacon</span><span className="item-price">$2.69</span></div>
+                            <div className="item-row"><span className="item-name">Bacon Egg*</span><span className="item-price">$2.99</span></div>
+                            <div className="item-row"><span className="item-name">Bacon Egg Cheese</span><span className="item-price">$3.49</span></div>
+                            <div className="item-row"><span className="item-name">Country Ham</span><span className="item-price">$3.29</span></div>
+                            <div className="item-row"><span className="item-name">Egg Biscuit (1 Egg)*</span><span className="item-price">$2.09</span></div>
+                            <div className="item-row"><span className="item-name">Deli Ham</span><span className="item-price">$2.99</span></div>
+                            <div className="item-row"><span className="item-name">Steak</span><span className="item-price">$3.29</span></div>
+                            <div className="item-row"><span className="item-name">Chicken</span><span className="item-price">$3.09</span></div>
+                            <div className="item-row"><span className="item-name">Tenderloin</span><span className="item-price">$3.25</span></div>
+                            <div className="item-row"><span className="item-name">Extra Egg/Cheese*</span><span className="item-price">$0.75</span></div>
+                            <div className="item-row"><span className="item-name">Extra Bacon</span><span className="item-price">$1.75</span></div>
+                            <div className="item-row"><span className="item-name">Extra Biscuit</span><span className="item-price">$0.99</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Sandwiches</h3>
+                            <div className="item-row"><span className="item-name">BLT</span><span className="item-price">$4.99</span></div>
+                            <div className="item-row"><span className="item-name">Sausage</span><span className="item-price">$4.99</span></div>
+                            <div className="item-row"><span className="item-name">Sausage Egg/Cheese</span><span className="item-price">$5.09</span></div>
+                            <div className="item-row"><span className="item-name">Sausage Egg Cheese*</span><span className="item-price">$5.25</span></div>
+                            <div className="item-row"><span className="item-name">Bacon</span><span className="item-price">$4.99</span></div>
+                            <div className="item-row"><span className="item-name">Bacon Egg/Cheese*</span><span className="item-price">$5.09</span></div>
+                            <div className="item-row"><span className="item-name">Bacon Egg Cheese*</span><span className="item-price">$5.25</span></div>
+                            <div className="item-row"><span className="item-name">Country Ham + Egg*</span><span className="item-price">$5.35</span></div>
+                            <div className="item-row"><span className="item-name">Deli Ham + Egg*</span><span className="item-price">$5.35</span></div>
+                            <div className="item-row"><span className="item-name">Chuckwagon</span><span className="item-price">$5.35</span></div>
+                            <div className="item-row"><span className="item-name">Bologna + Egg + Cheese*</span><span className="item-price">$5.29</span></div>
+                            <div className="item-row"><span className="item-name">Bologna</span><span className="item-price">$4.09</span></div>
+                            <div className="item-row"><span className="item-name">Grilled Cheese</span><span className="item-price">$3.49</span></div>
+                            <div className="item-row"><span className="item-name">Egg Sandwich*</span><span className="item-price">$3.49</span></div>
+                            <div className="item-row"><span className="item-name">Grilled Ham and Cheese</span><span className="item-price">$5.09</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Breakfast Special</h3>
+                            <div className="item-row"><span className="item-name">Small Biscuit Gravy</span><span className="item-price">$3.19</span></div>
+                            <div className="item-row"><span className="item-name">Large Biscuit Gravy</span><span className="item-price">$4.29</span></div>
+                            <div className="item-row"><span className="item-name">Breakfast Burritos</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Breakfast Pizzas + Drink</span><span className="item-price">$3.49</span></div>
+                            <div className="item-row"><span className="item-name">Breakfast Plate* (2 Eggs, Sausage/Bacon, Small Gravy)</span><span className="item-price">$6.49</span></div>
+                        </div>
+                    </div>
+                    <div className="menu-grid">
+                        <div className="menu-item">
+                            <h3>Burger</h3>
+                            <div className="item-row"><span className="item-name">Hamburger</span><span className="item-price">$4.59</span></div>
+                            <div className="item-row"><span className="item-name">Double Hamburger</span><span className="item-price">$5.99</span></div>
+                            <div className="item-row"><span className="item-name">Cheeseburger</span><span className="item-price">$5.99</span></div>
+                            <div className="item-row"><span className="item-name">Double Cheeseburger</span><span className="item-price">$6.79</span></div>
+                            <div className="item-row"><span className="item-name">Chili Cheeseburger</span><span className="item-price">$6.29</span></div>
+                            <div className="item-row"><span className="item-name">Bacon Cheeseburger</span><span className="item-price">$6.29</span></div>
+                            <div className="item-row"><span className="item-name">Double Bacon Cheeseburger</span><span className="item-price">$6.99</span></div>
+                            <div className="item-row"><span className="item-name">Jalapeno Cheeseburger</span><span className="item-price">$5.99</span></div>
+                            <div className="item-row"><span className="item-name">Double Bacon Hamburger</span><span className="item-price">$6.49</span></div>
+                            <div className="customization">Customize: Add Extra Cheese $0.75, No Cheese</div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Hotdog</h3>
+                            <div className="item-row"><span className="item-name">Chili Bun/Hotdog Plain</span><span className="item-price">$1.49</span></div>
+                            <div className="item-row"><span className="item-name">Hotdog - Chili</span><span className="item-price">$2.19</span></div>
+                            <div className="item-row"><span className="item-name">Hotdog - Chili Slaw</span><span className="item-price">$2.59</span></div>
+                            <div className="item-row"><span className="item-name">Hotdog - Chili Cheese</span><span className="item-price">$2.59</span></div>
+                            <div className="item-row"><span className="item-name">Hotdog - Chili Cheese Slaw</span><span className="item-price">$2.99</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Hoggie/Subs</h3>
+                            <div className="item-row"><span className="item-name">Hoggie</span><span className="item-price">$7.49</span></div>
+                            <div className="item-row"><span className="item-name">Ham</span><span className="item-price">$7.49</span></div>
+                            <div className="item-row"><span className="item-name">Turkey</span><span className="item-price">$7.49</span></div>
+                            <div className="item-row"><span className="item-name">Corn Beef</span><span className="item-price">$7.49</span></div>
+                            <div className="item-row"><span className="item-name">Roast Beef</span><span className="item-price">$7.49</span></div>
+                            <div className="item-row"><span className="item-name">Chicken Club</span><span className="item-price">$7.29</span></div>
+                            <div className="item-row"><span className="item-name">Club</span><span className="item-price">$7.29</span></div>
+                            <div className="item-row"><span className="item-name">Philly</span><span className="item-price">$7.99</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Salads</h3>
+                            <div className="item-row"><span className="item-name">Small Chef</span><span className="item-price">$6.29</span></div>
+                            <div className="item-row"><span className="item-name">Large Chef</span><span className="item-price">$7.49</span></div>
+                            <div className="item-row"><span className="item-name">Extra Egg/Cheese/Sauce</span><span className="item-price">$1.00</span></div>
+                            <div className="item-row"><span className="item-name">Extra Meat</span><span className="item-price">$1.99</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Specials (Fries/Drink-20oz)</h3>
+                            <div className="item-row"><span className="item-name">2 Hotdogs</span><span className="item-price">$6.99</span></div>
+                            <div className="item-row"><span className="item-name">Cheeseburger</span><span className="item-price">$7.99</span></div>
+                            <div className="item-row"><span className="item-name">Double Cheeseburger</span><span className="item-price">$8.99</span></div>
+                            <div className="item-row"><span className="item-name">Hoggie</span><span className="item-price">$9.99</span></div>
+                            <div className="item-row"><span className="item-name">Philly</span><span className="item-price">$9.99</span></div>
+                            <div className="item-row"><span className="item-name">Double Bacon Cheeseburger</span><span className="item-price">$9.99</span></div>
+                            <div className="item-row"><span className="item-name">Chicken Sandwich</span><span className="item-price">$7.49</span></div>
+                        </div>
+                    </div>
+                    <div className="menu-grid">
+                        <div className="menu-item">
+                            <h3>Sides</h3>
+                            <div className="item-row"><span className="item-name">Fries</span><span className="item-price">$2.39</span></div>
+                            <div className="item-row"><span className="item-name">Large Fries</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Cheese Fries</span><span className="item-price">$2.99</span></div>
+                            <div className="item-row"><span className="item-name">Chili Cheese Fries</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Corn Dogs</span><span className="item-price">$2.19</span></div>
+                            <div className="item-row"><span className="item-name">Onion Rings</span><span className="item-price">$3.49</span></div>
+                            <div className="item-row"><span className="item-name">Egg/Pork Rolls</span><span className="item-price">$2.19</span></div>
+                            <div className="item-row"><span className="item-name">Broccoli Bites</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Jalapeno Poppers</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Large Onion Rings</span><span className="item-price">$6.49</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Sides</h3>
+                            <div className="item-row"><span className="item-name">Cheesesticks</span><span className="item-price">$3.49</span></div>
+                            <div className="item-row"><span className="item-name">Wedges</span><span className="item-price">$2.49</span></div>
+                            <div className="item-row"><span className="item-name">Large Wedges</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Family Wedges</span><span className="item-price">$4.99</span></div>
+                            <div className="item-row"><span className="item-name">Tattertots</span><span className="item-price">$2.49</span></div>
+                            <div className="item-row"><span className="item-name">Fried Pickles/Tomatoes</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Fried Okra</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Corn Nuggets</span><span className="item-price">$3.49</span></div>
+                            <div className="item-row"><span className="item-name">Mini Tacos</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Breaded Mushrooms</span><span className="item-price">$3.49</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Sides</h3>
+                            <div className="item-row"><span className="item-name">Chicken Liver</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Chicken Gizzards</span><span className="item-price">$3.99</span></div>
+                            <div className="item-row"><span className="item-name">Chicken Cheese Tortilla</span><span className="item-price">$2.29</span></div>
+                        </div>
+                        <div className="menu-item">
+                            <h3>Additional</h3>
+                            <div className="item-row"><span className="item-name">Toast</span><span className="item-price">$0.79</span></div>
+                            <div className="item-row"><span className="item-name">2 Hashbrowns</span><span className="item-price">$1.29</span></div>
+                            <div className="item-row"><span className="item-name">Sauce Cup</span><span className="item-price">$0.49</span></div>
+                        </div>
+                    </div>
+                    <p className="note">Note: Prices are subject to change at any time. * Items contain egg products.</p>
+                    <p className="warning">Consuming raw or undercooked meat, poultry, seafood, or eggs may increase your risk of foodborne illness, especially if you have certain medical conditions.</p>
+                </div>
+            );
+        }
+
+        function GroceryPlaceholder() {
+            return (
+                <div className="section">
+                    <h2>Grocery Shopping</h2>
+                    <div className="placeholder">
+                        <p>Shop convenience store items (list coming soon). Add to cart and pick up with your food order!</p>
+                        <p><a href="#grocery" className="text-[#E8B923]">View Grocery Items (Coming Soon)</a></p>
+                    </div>
+                </div>
+            );
+        }
+
+        function Footer() {
+            return (
+                <footer className="footer">
+                    <p>© 2025 Julie's Deli and Fuel Stop. All rights reserved.</p>
+                    <p>Contact us at 865-337-7493</p>
+                </footer>
+            );
+        }
+
+        function App() {
+            return (
+                <div>
+                    <Navbar />
+                    <Hero />
+                    <div className="content">
+                        <div id="menu" className="section">
+                            <Menu />
+                        </div>
+                        <div id="grocery" className="section">
+                            <GroceryPlaceholder />
+                        </div>
+                        <div id="reviews" className="section">
+                            <Reviews />
+                        </div>
+                        <div id="about" className="section">
+                            <About />
+                        </div>
+                    </div>
+                    <Footer />
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
