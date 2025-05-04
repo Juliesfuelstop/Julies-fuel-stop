@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -45,9 +6,9 @@
     <title>Julie's Deli and Fuel Stop</title>
     <link href="/dist/output.css" rel="stylesheet">
     <script src="https://js.stripe.com/v3/" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js" integrity="sha256-Tx7tXvP7K+0u6pV9C2L8q3oD+4v6fR7q5q1e3Xv8qA=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js" integrity="sha256-4rQ4o+8zZ0k7k7z5K5gZ8J5g3a5f5K5K5K5K5K5K5K5=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.0/babel.min.js" integrity="sha256-qX7t4r8nS3v5n+2p3q5H1Xz6gK4J9X3i3z6G3X3i3z6=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.0/babel.min.js" crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <div id="root"></div>
@@ -131,7 +92,7 @@
             // Lunch & Dinner - Hoggie/Subs
             { name: "Hoggie", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
             { name: "Ham", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Turkey", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Turkey", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie- Hannah
             { name: "Corn Beef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
             { name: "Roast Beef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
             { name: "Chicken Club", price: 7.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
@@ -166,7 +127,7 @@
             { name: "Large Wedges", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
             { name: "Family Wedges", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
             { name: "Tattertots", price: 2.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/12/tattertots-1238293_1280.jpg" },
-            { name: "Fried Pickles/Tomatoes", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/13/pickles-1238294_1280.jpg" },
+            { name: "Fried Pickles/Tomatoes", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/13/pickles-1738294_1280.jpg" },
             { name: "Fried Okra", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/14/okra-1738275_1280.jpg" },
             { name: "Corn Nuggets", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/15/corn-nuggets-1238296_1280.jpg" },
             { name: "Mini Tacos", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/16/tacos-1238297_1280.jpg" },
@@ -426,7 +387,7 @@
                         <section id="about" className="container mx-auto py-8">
                             <h2 className="text-3xl font-bold mb-6 text-center">About Us</h2>
                             <div className="flex flex-col md:flex-row items-center">
-                                <img src="images/storefront.jpg" alt="Storefront" className="w-full md:w-1/2 h-64 object-cover rounded-lg mb-4 md:mb-0 md:mr-6" />
+                                <img src="https://cdn.pixabay.com/photo/2015/09/17/14/24/store-944722_1280.jpg" alt="Storefront" className="w-full md:w-1/2 h-64 object-cover rounded-lg mb-4 md:mb-0 md:mr-6" />
                                 <p className="text-lg">Julie's Fuel Stop, located conveniently in Knoxville, Tennessee, is a one-stop-shop offering a wide range of convenience and specialty products. With over 4 decades of experience as Sam and Jerry's Deli and Market, Julie's continues to fulfill diverse needs of the community. From grocery must-haves to satisfying deli delights and refueling options like high-quality gasoline, customers can find what they need and more. Additionally, Julie's Fuel Stop enhances its unique offerings with a smoke shop, beer collection, and novelty items including vapes, providing an enjoyable shopping experience for all.</p>
                             </div>
                         </section>
