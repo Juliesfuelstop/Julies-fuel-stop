@@ -1,599 +1,456 @@
-<!-- Trigger deployment to fix NOT_FOUND error -->
-<!-- Trigger deployment -->
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Julie's Deli and Fuel Stop in Knoxville, TN - Order food and groceries online">
-    <meta name="keywords" content="deli, fuel stop, Knoxville, Tennessee, online ordering, groceries">
-    <meta name="author" content="Julie's Deli and Fuel Stop">
     <title>Julie's Deli and Fuel Stop</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/react@17/umd/react.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@17/umd/react-dom.development.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/babel-standalone@6.26.0/babel.min.js"></script>
-    <style>
-        body {
-            font-family: 'Playfair Display', serif;
-            background-color: #F8F1E9;
-            margin: 0;
-        }
-        .navbar {
-            background: linear-gradient(to right, #1A252F, #2A3A4A);
-            color: #E8B923;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-        }
-        .navbar a {
-            color: #E8B923;
-            font-family: 'Cinzel', serif;
-            font-size: 1.1rem;
-            margin: 0 1rem;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .navbar a:hover {
-            color: #FFFFFF;
-        }
-        .hero {
-            background-image: url('/images/food-pattern.png');
-            background-color: rgba(26, 37, 47, 0.8);
-            background-blend-mode: overlay;
-            color: #E8B923;
-            text-align: center;
-            padding: 6rem 2rem 4rem;
-            margin-top: 4rem;
-        }
-        .hero h1 {
-            font-family: 'Cinzel', serif;
-            font-size: 3rem;
-            margin: 0;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        .hero p {
-            font-size: 1.2rem;
-            font-style: italic;
-            margin: 0.5rem 0;
-        }
-        .qr-code {
-            margin: 1rem auto;
-            display: block;
-        }
-        .qr-caption {
-            font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            color: #E8B923;
-            text-align: center;
-            margin-top: 0.5rem;
-        }
-        .operational-note {
-            background: rgba(248, 241, 233, 0.9);
-            border: 1px solid #E8B923;
-            border-radius: 5px;
-            padding: 1rem;
-            margin: 1rem auto;
-            max-width: 600px;
-            color: #1A252F;
-            font-size: 1rem;
-        }
-        .operational-note ul {
-            list-style-type: disc;
-            padding-left: 1.5rem;
-            margin: 0;
-        }
-        .operational-note li {
-            margin: 0.5rem 0;
-        }
-        .cta-button {
-            background-color: #E8B923;
-            color: #1A252F;
-            padding: 0.75rem 1.5rem;
-            border-radius: 5px;
-            font-family: 'Cinzel', serif;
-            font-size: 1rem;
-            text-decoration: none;
-            margin: 1rem;
-            display: inline-block;
-            transition: background-color 0.3s;
-        }
-        .cta-button:hover {
-            background-color: #D4A017;
-        }
-        .content {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        .section {
-            margin: 2rem 0;
-        }
-        .section h2 {
-            font-family: 'Cinzel', serif;
-            color: #1A252F;
-            font-size: 1.8rem;
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        .about p {
-            font-size: 1rem;
-            color: #4A4A4A;
-            line-height: 1.6;
-            text-align: center;
-        }
-        .about img {
-            display: block;
-            max-width: 100%;
-            margin: 1rem auto;
-            border: 2px solid #E8B923;
-            border-radius: 5px;
-        }
-        .about .caption {
-            text-align: center;
-            font-style: italic;
-            color: #1A252F;
-            margin-top: 0.5rem;
-        }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-        .menu-item {
-            background: #FFFFF0;
-            border: 1px solid #E8B923;
-            border-radius: 5px;
-            padding: 1rem;
-        }
-        .menu-item h3 {
-            font-family: 'Cinzel', serif;
-            font-size: 1.2rem;
-            color: #1A252F;
-            margin-bottom: 0.5rem;
-        }
-        .item-row {
-            display: flex;
-            justify-content: space-between;
-            margin: 0.3rem 0;
-        }
-        .item-name {
-            flex: 1;
-            color: #4A4A4A;
-            font-size: 0.9rem;
-        }
-        .item-price {
-            width: 60px;
-            text-align: right;
-            color: #1A252F;
-            font-size: 0.9rem;
-            font-weight: 700;
-        }
-        .customization {
-            font-size: 0.8rem;
-            color: #4A4A4A;
-            font-style: italic;
-            margin-top: 0.3rem;
-        }
-        .note, .warning {
-            font-size: 0.8rem;
-            color: #4A4A4A;
-            text-align: center;
-            margin-top: 1rem;
-            font-style: italic;
-        }
-        .warning {
-            color: #A31621;
-            font-weight: 700;
-        }
-        .reviews-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-        }
-        .review-card {
-            background: #FFFFF0;
-            border: 1px solid #E8B923;
-            border-radius: 5px;
-            padding: 1rem;
-            text-align: center;
-        }
-        .review-card p {
-            font-size: 0.9rem;
-            color: #4A4A4A;
-            margin: 0.5rem 0;
-        }
-        .review-card .stars {
-            color: #E8B923;
-            font-size: 1.2rem;
-        }
-        .placeholder {
-            background: #FFFFF0;
-            padding: 1rem;
-            border: 1px solid #E8B923;
-            border-radius: 5px;
-            text-align: center;
-            color: #1A252F;
-        }
-        .footer {
-            background: #1A252F;
-            color: #E8B923;
-            text-align: center;
-            padding: 1rem;
-            font-size: 0.9rem;
-        }
-        .footer a {
-            color: #E8B923;
-            text-decoration: none;
-            margin: 0 0.5rem;
-        }
-        .footer a:hover {
-            color: #FFFFFF;
-        }
-        @media (max-width: 768px) {
-            .navbar {
-                flex-direction: column;
-                padding: 0.5rem;
-            }
-            .navbar a {
-                margin: 0.5rem 0;
-            }
-            .hero h1 {
-                font-size: 2rem;
-            }
-            .hero p {
-                font-size: 1rem;
-            }
-            .section h2 {
-                font-size: 1.5rem;
-            }
-            .operational-note {
-                font-size: 0.9rem;
-                padding: 0.75rem;
-            }
-            .menu-grid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            }
-        }
-    </style>
+    <link href="/dist/output.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js" integrity="sha256-Tx7tXvP7K+0u6pV9C2L8q3oD+4v6fR7q5q1e3Xv8qA=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js" integrity="sha256-4rQ4o+8zZ0k7k7z5K5gZ8J5g3a5f5K5K5K5K5K5K5K5=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.0/babel.min.js" integrity="sha256-qX7t4r8nS3v5n+2p3q5H1Xz6gK4J9X3i3z6G3X3i3z6=" crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="bg-gray-100 font-sans">
     <div id="root"></div>
+
     <script type="text/babel">
-        function Navbar() {
-            return (
-                <nav className="navbar">
-                    <div className="flex items-center">
-                        <svg className="w-25 h-25 mr-2" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" alt="JFS Logo">
-                            <circle cx="50" cy="50" r="45" fill="#1A252F"/>
-                            <circle cx="50" cy="30" r="15" fill="#E8B923"/>
-                            <rect x="35" y="45" width="30" height="5" fill="#E8B923"/>
-                            <path d="M35 50 H65" stroke="#F8F1E9" stroke-width="2"/>
-                            <text x="50" y="75" font-family="'Cinzel', serif" font-size="25" fill="#E8B923" text-anchor="middle">JFS</text>
-                            <circle cx="50" cy="50" r="45" fill="none" stroke="#F8F1E9" stroke-width="2"/>
-                        </svg>
-                        <span className="font-cinzel text-xl">Julie's Deli</span>
-                    </div>
-                    <div>
-                        <a href="#home">Home</a>
-                        <a href="#menu">Menu</a>
-                        <a href="#grocery">Grocery</a>
-                        <a href="#reviews">Reviews</a>
-                        <a href="#about">About</a>
-                        <a href="#contact">Contact</a>
-                        <a href="#account">Account</a>
-                    </div>
-                </nav>
-            );
+        const { useState, useEffect } = React;
+
+        // Error Boundary Component
+        class ErrorBoundary extends React.Component {
+            state = { hasError: false, error: null };
+
+            static getDerivedStateFromError(error) {
+                return { hasError: true, error };
+            }
+
+            render() {
+                if (this.state.hasError) {
+                    return <h2 className="text-red-500 text-center p-4">Something went wrong: {this.state.error.message}</h2>;
+                }
+                return this.props.children;
+            }
         }
 
-        function Hero() {
+        // Menu Items Data
+        const menuItems = [
+            // Breakfast - Biscuits
+            { name: "Jelly/Butter Biscuit", price: 1.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/51/biscuit-1238272_1280.jpg" },
+            { name: "Sausage", price: 2.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
+            { name: "Sausage Egg*", price: 2.69, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
+            { name: "Sausage Egg Cheese*", price: 3.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
+            { name: "Bacon", price: 2.69, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
+            { name: "Bacon Egg*", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
+            { name: "Bacon Egg Cheese*", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
+            { name: "Country Ham", price: 3.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
+            { name: "Egg Biscuit (1 Egg)*", price: 2.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/51/biscuit-1238272_1280.jpg" },
+            { name: "Deli Ham", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
+            { name: "Steak", price: 3.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/steak-1238276_1280.jpg" },
+            { name: "Chicken", price: 3.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/chicken-1238277_1280.jpg" },
+            { name: "Tenderloin", price: 3.25, image: "https://cdn.pixabay.com/photo/2016/03/05/21/57/tenderloin-1238278_1280.jpg" },
+            { name: "Extra Egg/Cheese*", price: 0.75, image: "https://cdn.pixabay.com/photo/2016/03/05/21/58/egg-1238279_1280.jpg" },
+            { name: "Extra Bacon", price: 1.75, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
+            { name: "Extra Biscuit", price: 0.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/51/biscuit-1238272_1280.jpg" },
+            // Breakfast - Sandwiches
+            { name: "BLT", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/46/blt-1238267_1280.jpg" },
+            { name: "Sausage", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
+            { name: "Sausage Egg/Cheese*", price: 5.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
+            { name: "Sausage Egg Cheese*", price: 5.25, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
+            { name: "Bacon", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
+            { name: "Bacon Egg/Cheese*", price: 5.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
+            { name: "Bacon Egg Cheese*", price: 5.25, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
+            { name: "Country Ham + Egg*", price: 5.35, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
+            { name: "Deli Ham + Egg*", price: 5.35, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
+            { name: "Chuckwagon", price: 5.35, image: "https://cdn.pixabay.com/photo/2016/03/05/21/59/chuckwagon-1238280_1280.jpg" },
+            { name: "Bologna + Egg + Cheese*", price: 5.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/00/bologna-1238281_1280.jpg" },
+            { name: "Bologna", price: 4.09, image: "https://cdn.pixabay.com/photo/2016/03/05/22/00/bologna-1238281_1280.jpg" },
+            { name: "Grilled Cheese", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/50/grilled-cheese-1238271_1280.jpg" },
+            { name: "Egg Sandwich*", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/58/egg-1238279_1280.jpg" },
+            { name: "Grilled Ham and Cheese", price: 5.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
+            // Breakfast - Breakfast Special
+            { name: "Small Biscuit Gravy", price: 3.19, image: "https://cdn.pixabay.com/photo/2016/03/05/22/01/biscuit-gravy-1238282_1280.jpg" },
+            { name: "Large Biscuit Gravy", price: 4.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/01/biscuit-gravy-1238282_1280.jpg" },
+            { name: "Breakfast Burritos", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/02/burritos-1238283_1280.jpg" },
+            { name: "Breakfast Pizzas + Drink", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/03/pizza-1238284_1280.jpg" },
+            { name: "Breakfast Plate* (2 Eggs, Sausage/Bacon, Small Gravy)", price: 6.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/04/breakfast-plate-1238285_1280.jpg" },
+            // Lunch & Dinner - Burger
+            { name: "Hamburger", price: 4.59, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Double Hamburger", price: 5.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Cheeseburger", price: 5.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Double Cheeseburger", price: 6.79, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Chili Cheeseburger", price: 6.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Bacon Cheeseburger", price: 6.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Double Bacon Cheeseburger", price: 6.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Jalapeno Cheeseburger", price: 5.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Double Bacon Hamburger", price: 6.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            // Lunch & Dinner - Hotdog
+            { name: "Chili Bun/Hotdog Plain", price: 1.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
+            { name: "Hotdog - Chili", price: 2.19, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
+            { name: "Hotdog - Chili Slaw", price: 2.59, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
+            { name: "Hotdog - Chili Cheese", price: 2.59, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
+            { name: "Hotdog - Chili Cheese Slaw", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
+            // Lunch & Dinner - Hoggie/Subs
+            { name: "Hoggie", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Ham", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Turkey", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Corn Beef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Roast Beef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Chicken Club", price: 7.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Club", price: 7.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Philly", price: 7.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            // Lunch & Dinner - Salads
+            { name: "Small Chef", price: 6.29, image: "https://cdn.pixabay.com/photo/2016/11/29/03/54/chicken-salad-1867451_1280.jpg" },
+            { name: "Large Chef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/11/29/03/54/chicken-salad-1867451_1280.jpg" },
+            { name: "Extra Egg/Cheese/Sauce", price: 1.00, image: "https://cdn.pixabay.com/photo/2016/03/05/21/58/egg-1238279_1280.jpg" },
+            { name: "Extra Meat", price: 1.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/chicken-1238277_1280.jpg" },
+            // Lunch & Dinner - Specials
+            { name: "2 Hotdogs", price: 6.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
+            { name: "Cheeseburger", price: 7.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Double Cheeseburger", price: 8.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Hoggie", price: 9.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Philly", price: 9.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
+            { name: "Double Bacon Cheeseburger", price: 9.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
+            { name: "Chicken Sandwich", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/chicken-1238277_1280.jpg" },
+            // Extras - Sides
+            { name: "Fries", price: 2.39, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
+            { name: "Large Fries", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
+            { name: "Cheese Fries", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
+            { name: "Chili Cheese Fries", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
+            { name: "Corn Dogs", price: 2.19, image: "https://cdn.pixabay.com/photo/2016/03/05/22/05/corn-dogs-1238286_1280.jpg" },
+            { name: "Onion Rings", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/06/onion-rings-1238287_1280.jpg" },
+            { name: "Egg/Pork Rolls", price: 2.19, image: "https://cdn.pixabay.com/photo/2016/03/05/22/07/egg-rolls-1238288_1280.jpg" },
+            { name: "Broccoli Bites", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/08/broccoli-bites-1238289_1280.jpg" },
+            { name: "Jalapeno Poppers", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/09/jalapeno-poppers-1238290_1280.jpg" },
+            { name: "Large Onion Rings", price: 6.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/06/onion-rings-1238287_1280.jpg" },
+            { name: "Cheesesticks", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/10/cheesesticks-1238291_1280.jpg" },
+            { name: "Wedges", price: 2.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
+            { name: "Large Wedges", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
+            { name: "Family Wedges", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
+            { name: "Tattertots", price: 2.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/12/tattertots-1238293_1280.jpg" },
+            { name: "Fried Pickles/Tomatoes", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/13/pickles-1238294_1280.jpg" },
+            { name: "Fried Okra", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/14/okra-1738275_1280.jpg" },
+            { name: "Corn Nuggets", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/15/corn-nuggets-1238296_1280.jpg" },
+            { name: "Mini Tacos", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/16/tacos-1238297_1280.jpg" },
+            { name: "Breaded Mushrooms", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/17/mushrooms-1238298_1280.jpg" },
+            { name: "Chicken Liver", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/57/chicken-1238278_1280.jpg" },
+            { name: "Chicken Gizzards", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/57/chicken-1238278_1280.jpg" },
+            { name: "Chicken Cheese Tortilla", price: 2.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/18/tortilla-1238299_1280.jpg" },
+            // Extras - Additional
+            { name: "Toast", price: 0.79, image: "https://cdn.pixabay.com/photo/2016/03/05/22/19/toast-1238300_1280.jpg" },
+            { name: "2 Hashbrowns", price: 1.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/20/hashbrowns-1238301_1280.jpg" },
+            { name: "Sauce Cup", price: 0.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/21/sauce-1238302_1280.jpg" },
+        ];
+
+        // Promotions Data
+        const promotions = [
+            "10% off on all sandwiches this week!",
+            "Free Bottled Water with any Fuel Can purchase!"
+        ];
+
+        // Menu Item Component
+        const MenuItem = ({ item, onAddToCart, onRemoveFromCart, isInCart }) => (
+            <div className="bg-white p-4 rounded-lg shadow flex items-center">
+                <img src={item.image} alt={item.name} className="w-16 h-16 mr-4 rounded" />
+                <div>
+                    <h3 className="text-xl font-semibold">{item.name}</h3>
+                    <p className="text-gray-600">${item.price.toFixed(2)}</p>
+                    <label className="flex items-center mt-2">
+                        <input
+                            type="checkbox"
+                            className="mr-2"
+                            checked={isInCart}
+                            onChange={() => (isInCart ? onRemoveFromCart(item.name) : onAddToCart(item))}
+                        />
+                        <span>Add to Cart</span>
+                    </label>
+                </div>
+            </div>
+        );
+
+        // Cart Component
+        const Cart = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onPay }) => {
+            const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
+            const tax = subtotal * taxRate;
+            const total = subtotal + tax + tipAmount;
+
             return (
-                <section className="hero">
-                    <h1>Welcome to Julie's Deli and Fuel Stop</h1>
-                    <p>Delicious meals and convenience in Knoxville, TN</p>
-                    <p>Mon-Fri: 4AM-9PM | Sat: 6AM-6PM | Sun: 9AM-5PM</p>
-                    <a href="#menu" className="cta-button">Order Food</a>
-                    <a href="#grocery" className="cta-button">Shop Groceries</a>
-                    <div>
-                        <svg className="qr-code" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" alt="QR Code to Order Online">
-                            <rect x="0" y="0" width="200" height="200" fill="#1A252F"/>
-                            <rect x="5" y="5" width="190" height="190" fill="#F8F1E9"/>
-                            <rect x="10" y="10" width="20" height="20" fill="#1A252F"/>
-                            <rect x="40" y="10" width="20" height="20" fill="#1A252F"/>
-                            <rect x="10" y="40" width="20" height="20" fill="#1A252F"/>
-                            <rect x="160" y="10" width="20" height="20" fill="#1A252F"/>
-                            <rect x="160" y="40" width="20" height="20" fill="#1A252F"/>
-                            <rect x="10" y="160" width="20" height="20" fill="#1A252F"/>
-                            <rect x="40" y="160" width="20" height="20" fill="#1A252F"/>
-                            <rect x="160" y="160" width="20" height="20" fill="#1A252F"/>
-                            <rect x="2" y="2" width="196" height="196" fill="none" stroke="#E8B923" stroke-width="4"/>
-                            <text x="100" y="190" font-family="'Cinzel', serif" font-size="10" fill="#E8B923" text-anchor="middle">Scan to Visit</text>
-                        </svg>
-                        <p className="qr-caption">Scan to Order Online</p>
+                <section className="container mx-auto py-8 bg-white rounded-lg shadow p-6 mb-8">
+                    <h2 className="text-3xl font-bold mb-6 text-center">Cart</h2>
+                    <div className="mb-4">
+                        {cartItems.length ? (
+                            cartItems.map(item => (
+                                <p key={item.name} className="flex justify-between">
+                                    <span>{item.name}: ${item.price.toFixed(2)}</span>
+                                    <button
+                                        className="text-red-500"
+                                        onClick={() => removeFromCart(item.name)}
+                                    >
+                                        Remove
+                                    </button>
+                                </p>
+                            ))
+                        ) : (
+                            <p>No items in cart.</p>
+                        )}
+                    </div>
+                    <div className="border-t pt-4">
+                        <p className="flex justify-between"><span>Subtotal:</span> <span>${subtotal.toFixed(2)}</span></p>
+                        <p className="flex justify-between"><span>Tax (9.25%):</span> <span>${tax.toFixed(2)}</span></p>
+                        <div className="flex justify-between items-center mb-4">
+                            <span>Tip:</span>
+                            <div>
+                                <button className="tip-btn bg-gray-200 px-2 py-1 rounded mr-2" onClick={() => setTipAmount(subtotal * 0.05)}>5%</button>
+                                <button className="tip-btn bg-gray-200 px-2 py-1 rounded mr-2" onClick={() => setTipAmount(subtotal * 0.10)}>10%</button>
+                                <button className="tip-btn bg-gray-200 px-2 py-1 rounded mr-2" onClick={() => setTipAmount(subtotal * 0.15)}>15%</button>
+                                <input
+                                    type="number"
+                                    id="custom-tip"
+                                    placeholder="Custom $"
+                                    className="w-24 border rounded px-2 py-1"
+                                    min="0"
+                                    step="0.01"
+                                    value={tipAmount || ''}
+                                    onChange={(e) => setTipAmount(parseFloat(e.target.value) || 0)}
+                                />
+                            </div>
+                        </div>
+                        <p className="flex justify-between font-bold"><span>Total:</span> <span>${total.toFixed(2)}</span></p>
+                    </div>
+                    <div className="mt-6">
+                        <h3 className="text-xl font-semibold mb-4">Payment</h3>
+                        <div id="card-element" className="border rounded p-4 mb-4"></div>
+                        <div id="card-errors" className="text-red-500 mb-4"></div>
+                        <button
+                            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+                            onClick={() => onPay(total)}
+                        >
+                            Pay Now
+                        </button>
                     </div>
                 </section>
             );
-        }
+        };
 
-        function Reviews() {
-            const [reviews, setReviews] = React.useState([]);
-            const [loading, setLoading] = React.useState(true);
+        // Main App Component
+        const App = () => {
+            const [cartItems, setCartItems] = useState([]);
+            const [tipAmount, setTipAmount] = useState(0);
+            const [stripe, setStripe] = useState(null);
+            const [cardElement, setCardElement] = useState(null);
 
-            React.useEffect(() => {
-                fetch('https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJkXjRA-AQXIgRQUNmWuhtVfc&fields=reviews&key=AIzaSyAQQyZkFi5RCq-TydVnG2lHawKm2Mp1_1k')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.result && data.result.reviews) {
-                            setReviews(data.result.reviews.slice(0, 3)); // Display up to 3 reviews
-                        }
-                        setLoading(false);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching reviews:', error);
-                        setLoading(false);
-                    });
+            // Initialize Stripe
+            useEffect(() => {
+                if (window.Stripe) {
+                    const stripeInstance = Stripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB');
+                    setStripe(stripeInstance);
+                    const elements = stripeInstance.elements();
+                    const card = elements.create('card');
+                    card.mount('#card-element');
+                    setCardElement(card);
+
+                    return () => card.destroy();
+                }
             }, []);
 
-            if (loading) {
-                return (
-                    <div className="section">
-                        <h2>What Our Customers Say</h2>
-                        <p className="text-center">Loading reviews...</p>
-                    </div>
-                );
-            }
+            const addToCart = (item) => {
+                setCartItems([...cartItems, item]);
+            };
 
-            if (reviews.length === 0) {
-                return (
-                    <div className="section">
-                        <h2>What Our Customers Say</h2>
-                        <p className="text-center">No reviews available yet. Be the first to leave one!</p>
-                        <p className="text-center mt-4">
-                            <a href="https://www.google.com/maps/place/?q=place_id:ChIJkXjRA-AQXIgRQUNmWuhtVfc" target="_blank" className="text-[#E8B923]">Leave a review on Google</a>
-                        </p>
-                    </div>
-                );
-            }
+            const removeFromCart = (name) => {
+                setCartItems(cartItems.filter(item => item.name !== name));
+            };
+
+            const handlePayment = async (total) => {
+                if (!cartItems.length) {
+                    document.getElementById('card-errors').textContent = 'Please add at least one item to proceed.';
+                    return;
+                }
+                if (total <= 0) {
+                    document.getElementById('card-errors').textContent = 'Total amount must be greater than $0.';
+                    return;
+                }
+                if (stripe && cardElement) {
+                    const { error, token } = await stripe.createToken(cardElement);
+                    if (error) {
+                        document.getElementById('card-errors').textContent = error.message;
+                    } else {
+                        document.getElementById('card-errors').textContent = '';
+                        alert('Payment token created successfully! Total: $' + total.toFixed(2) + '\nToken ID: ' + token.id);
+                        setCartItems([]);
+                        setTipAmount(0);
+                        cardElement.clear();
+                    }
+                } else {
+                    document.getElementById('card-errors').textContent = 'Stripe initialization failed. Please try again.';
+                }
+            };
 
             return (
-                <div className="section">
-                    <h2>What Our Customers Say</h2>
-                    <div className="reviews-grid">
-                        {reviews.map((review, index) => (
-                            <div key={index} className="review-card">
-                                <p>"{review.text}"</p>
-                                <div className="stars">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</div>
-                                <p>- {review.author_name}</p>
+                <ErrorBoundary>
+                    <div>
+                        {/* Navbar */}
+                        <nav className="bg-blue-600 p-4 text-white">
+                            <div className="container mx-auto flex justify-between items-center">
+                                <div className="flex items-center">
+                                    <svg className="w-25 h-25 mr-2" viewBox="0 0 100 100" fill="none">
+                                        <defs>
+                                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                                <stop offset="0%" style="stop-color:#2563EB;" />
+                                                <stop offset="100%" style="stop-color:#FBBF24;" />
+                                            </linearGradient>
+                                        </defs>
+                                        <circle cx="50" cy="50" r="48" fill="#ffffff" stroke="#2563EB" strokeWidth="4"/>
+                                        <path d="M30 30 L40 20 L50 30 L60 20 L70 30" fill="none" stroke="url(#logoGradient)" strokeWidth="4"/>
+                                        <path d="M30 70 Q50 50 70 70" fill="none" stroke="url(#logoGradient)" strokeWidth="4"/>
+                                        <path d="M20 50 A 30 30 0 0 1 80 50" fill="none" stroke="url(#logoGradient)" strokeWidth="2" strokeDasharray="5 5"/>
+                                        <text x="25" y="90" fontSize="10" fill="url(#logoGradient)" textAnchor="middle" transform="rotate(-5 50 90)">
+                                            <tspan dy="-0.5em">Julie's</tspan>
+                                            <tspan x="25" dy="1em">Deli and Fuel Stop</tspan>
+                                        </text>
+                                    </svg>
+                                    <h1 className="text-2xl font-bold">Julie's Deli and Fuel Stop</h1>
+                                </div>
+                                <div className="space-x-4">
+                                    <a href="#home" className="hover:underline">Home</a>
+                                    <a href="#promotions" className="hover:underline">Promotions</a>
+                                    <a href="#menu" className="hover:underline">Menu</a>
+                                    <a href="#reviews" className="hover:underline">Reviews</a>
+                                    <a href="#about" className="hover:underline">About</a>
+                                    <a href="#contact" className="hover:underline">Contact</a>
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                    <p className="text-center mt-4">
-                        <a href="https://www.google.com/maps/place/?q=place_id:ChIJkXjRA-AQXIgRQUNmWuhtVfc" target="_blank" className="text-[#E8B923]">See more on Google</a>
-                    </p>
-                </div>
-            );
-        }
+                        </nav>
 
-        function About() {
-            return (
-                <div className="section about">
-                    <h2>About Us</h2>
-                    <p>Julie's Fuel Stop, located conveniently in Knoxville, Tennessee, is a one-stop-shop offering a wide range of convenience and specialty products. With over 4 decades of experience as Sam and Jerry's Deli and Market, Julie's continues to fulfill diverse needs of the community. From grocery must-haves to satisfying deli delights and refueling options like high-quality gasoline, customers can find what they need and more. Additionally, Julie's Fuel Stop enhances its unique offerings with a smoke shop, beer collection, and novelty items including vapes, providing an enjoyable shopping experience for all.</p>
-                    <img src="/images/storefront.jpg" alt="Julie's Deli and Fuel Stop Storefront" />
-                    <p className="caption">Our storefront in Knoxville, TN</p>
-                    <div className="operational-note">
-                        <ul>
-                            <li><strong>Order Hours:</strong> 5 AM to 6 PM daily</li>
-                            <li><strong>Same-Day Order Cutoff:</strong> 6 PM (no orders accepted after 6 PM)</li>
-                            <li><strong>Order Requirements:</strong> Pickup only, no minimum order</li>
-                            <li><strong>Preparation Times:</strong> Orders prepared between 5 AM and 6 PM</li>
-                        </ul>
-                    </div>
-                </div>
-            );
-        }
+                        {/* Hero Section */}
+                        <section id="home" className="container mx-auto py-12 text-center">
+                            <h2 className="text-4xl font-bold mb-4">Welcome to Julie's Deli and Fuel Stop</h2>
+                            <p className="text-lg mb-6">Your one-stop shop for delicious deli food and fuel services!</p>
+                            <img src="https://cdn.pixabay.com/photo/2016/03/31/18/36/qr-code-1295401_1280.png" alt="QR Code" className="mx-auto w-32 h-32" />
+                        </section>
 
-        function Menu() {
-            return (
-                <div className="section">
-                    <h2>Our Menu</h2>
-                    <div className="menu-grid">
-                        <div className="menu-item">
-                            <h3>Biscuits</h3>
-                            <div className="item-row"><span className="item-name">Jelly/Butter Biscuit</span><span className="item-price">$1.29</span></div>
-                            <div className="item-row"><span className="item-name">Sausage</span><span className="item-price">$2.29</span></div>
-                            <div className="item-row"><span className="item-name">Sausage Egg*</span><span className="item-price">$2.69</span></div>
-                            <div className="item-row"><span className="item-name">Sausage Egg Cheese*</span><span className="item-price">$3.09</span></div>
-                            <div className="item-row"><span className="item-name">Bacon</span><span className="item-price">$2.69</span></div>
-                            <div className="item-row"><span className="item-name">Bacon Egg*</span><span className="item-price">$2.99</span></div>
-                            <div className="item-row"><span className="item-name">Bacon Egg Cheese</span><span className="item-price">$3.49</span></div>
-                            <div className="item-row"><span className="item-name">Country Ham</span><span className="item-price">$3.29</span></div>
-                            <div className="item-row"><span className="item-name">Egg Biscuit (1 Egg)*</span><span className="item-price">$2.09</span></div>
-                            <div className="item-row"><span className="item-name">Deli Ham</span><span className="item-price">$2.99</span></div>
-                            <div className="item-row"><span className="item-name">Steak</span><span className="item-price">$3.29</span></div>
-                            <div className="item-row"><span className="item-name">Chicken</span><span className="item-price">$3.09</span></div>
-                            <div className="item-row"><span className="item-name">Tenderloin</span><span className="item-price">$3.25</span></div>
-                            <div className="item-row"><span className="item-name">Extra Egg/Cheese*</span><span className="item-price">$0.75</span></div>
-                            <div className="item-row"><span className="item-name">Extra Bacon</span><span className="item-price">$1.75</span></div>
-                            <div className="item-row"><span className="item-name">Extra Biscuit</span><span className="item-price">$0.99</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Sandwiches</h3>
-                            <div className="item-row"><span className="item-name">BLT</span><span className="item-price">$4.99</span></div>
-                            <div className="item-row"><span className="item-name">Sausage</span><span className="item-price">$4.99</span></div>
-                            <div className="item-row"><span className="item-name">Sausage Egg/Cheese</span><span className="item-price">$5.09</span></div>
-                            <div className="item-row"><span className="item-name">Sausage Egg Cheese*</span><span className="item-price">$5.25</span></div>
-                            <div className="item-row"><span className="item-name">Bacon</span><span className="item-price">$4.99</span></div>
-                            <div className="item-row"><span className="item-name">Bacon Egg/Cheese*</span><span className="item-price">$5.09</span></div>
-                            <div className="item-row"><span className="item-name">Bacon Egg Cheese*</span><span className="item-price">$5.25</span></div>
-                            <div className="item-row"><span className="item-name">Country Ham + Egg*</span><span className="item-price">$5.35</span></div>
-                            <div className="item-row"><span className="item-name">Deli Ham + Egg*</span><span className="item-price">$5.35</span></div>
-                            <div className="item-row"><span className="item-name">Chuckwagon</span><span className="item-price">$5.35</span></div>
-                            <div className="item-row"><span className="item-name">Bologna + Egg + Cheese*</span><span className="item-price">$5.29</span></div>
-                            <div className="item-row"><span className="item-name">Bologna</span><span className="item-price">$4.09</span></div>
-                            <div className="item-row"><span className="item-name">Grilled Cheese</span><span className="item-price">$3.49</span></div>
-                            <div className="item-row"><span className="item-name">Egg Sandwich*</span><span className="item-price">$3.49</span></div>
-                            <div className="item-row"><span className="item-name">Grilled Ham and Cheese</span><span className="item-price">$5.09</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Breakfast Special</h3>
-                            <div className="item-row"><span className="item-name">Small Biscuit Gravy</span><span className="item-price">$3.19</span></div>
-                            <div className="item-row"><span className="item-name">Large Biscuit Gravy</span><span className="item-price">$4.29</span></div>
-                            <div className="item-row"><span className="item-name">Breakfast Burritos</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Breakfast Pizzas + Drink</span><span className="item-price">$3.49</span></div>
-                            <div className="item-row"><span className="item-name">Breakfast Plate* (2 Eggs, Sausage/Bacon, Small Gravy)</span><span className="item-price">$6.49</span></div>
-                        </div>
-                    </div>
-                    <div className="menu-grid">
-                        <div className="menu-item">
-                            <h3>Burger</h3>
-                            <div className="item-row"><span className="item-name">Hamburger</span><span className="item-price">$4.59</span></div>
-                            <div className="item-row"><span className="item-name">Double Hamburger</span><span className="item-price">$5.99</span></div>
-                            <div className="item-row"><span className="item-name">Cheeseburger</span><span className="item-price">$5.99</span></div>
-                            <div className="item-row"><span className="item-name">Double Cheeseburger</span><span className="item-price">$6.79</span></div>
-                            <div className="item-row"><span className="item-name">Chili Cheeseburger</span><span className="item-price">$6.29</span></div>
-                            <div className="item-row"><span className="item-name">Bacon Cheeseburger</span><span className="item-price">$6.29</span></div>
-                            <div className="item-row"><span className="item-name">Double Bacon Cheeseburger</span><span className="item-price">$6.99</span></div>
-                            <div className="item-row"><span className="item-name">Jalapeno Cheeseburger</span><span className="item-price">$5.99</span></div>
-                            <div className="item-row"><span className="item-name">Double Bacon Hamburger</span><span className="item-price">$6.49</span></div>
-                            <div className="customization">Customize: Add Extra Cheese $0.75, No Cheese</div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Hotdog</h3>
-                            <div className="item-row"><span className="item-name">Chili Bun/Hotdog Plain</span><span className="item-price">$1.49</span></div>
-                            <div className="item-row"><span className="item-name">Hotdog - Chili</span><span className="item-price">$2.19</span></div>
-                            <div className="item-row"><span className="item-name">Hotdog - Chili Slaw</span><span className="item-price">$2.59</span></div>
-                            <div className="item-row"><span className="item-name">Hotdog - Chili Cheese</span><span className="item-price">$2.59</span></div>
-                            <div className="item-row"><span className="item-name">Hotdog - Chili Cheese Slaw</span><span className="item-price">$2.99</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Hoggie/Subs</h3>
-                            <div className="item-row"><span className="item-name">Hoggie</span><span className="item-price">$7.49</span></div>
-                            <div className="item-row"><span className="item-name">Ham</span><span className="item-price">$7.49</span></div>
-                            <div className="item-row"><span className="item-name">Turkey</span><span className="item-price">$7.49</span></div>
-                            <div className="item-row"><span className="item-name">Corn Beef</span><span className="item-price">$7.49</span></div>
-                            <div className="item-row"><span className="item-name">Roast Beef</span><span className="item-price">$7.49</span></div>
-                            <div className="item-row"><span className="item-name">Chicken Club</span><span className="item-price">$7.29</span></div>
-                            <div className="item-row"><span className="item-name">Club</span><span className="item-price">$7.29</span></div>
-                            <div className="item-row"><span className="item-name">Philly</span><span className="item-price">$7.99</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Salads</h3>
-                            <div className="item-row"><span className="item-name">Small Chef</span><span className="item-price">$6.29</span></div>
-                            <div className="item-row"><span className="item-name">Large Chef</span><span className="item-price">$7.49</span></div>
-                            <div className="item-row"><span className="item-name">Extra Egg/Cheese/Sauce</span><span className="item-price">$1.00</span></div>
-                            <div className="item-row"><span className="item-name">Extra Meat</span><span className="item-price">$1.99</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Specials (Fries/Drink-20oz)</h3>
-                            <div className="item-row"><span className="item-name">2 Hotdogs</span><span className="item-price">$6.99</span></div>
-                            <div className="item-row"><span className="item-name">Cheeseburger</span><span className="item-price">$7.99</span></div>
-                            <div className="item-row"><span className="item-name">Double Cheeseburger</span><span className="item-price">$8.99</span></div>
-                            <div className="item-row"><span className="item-name">Hoggie</span><span className="item-price">$9.99</span></div>
-                            <div className="item-row"><span className="item-name">Philly</span><span className="item-price">$9.99</span></div>
-                            <div className="item-row"><span className="item-name">Double Bacon Cheeseburger</span><span className="item-price">$9.99</span></div>
-                            <div className="item-row"><span className="item-name">Chicken Sandwich</span><span className="item-price">$7.49</span></div>
-                        </div>
-                    </div>
-                    <div className="menu-grid">
-                        <div className="menu-item">
-                            <h3>Sides</h3>
-                            <div className="item-row"><span className="item-name">Fries</span><span className="item-price">$2.39</span></div>
-                            <div className="item-row"><span className="item-name">Large Fries</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Cheese Fries</span><span className="item-price">$2.99</span></div>
-                            <div className="item-row"><span className="item-name">Chili Cheese Fries</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Corn Dogs</span><span className="item-price">$2.19</span></div>
-                            <div className="item-row"><span className="item-name">Onion Rings</span><span className="item-price">$3.49</span></div>
-                            <div className="item-row"><span className="item-name">Egg/Pork Rolls</span><span className="item-price">$2.19</span></div>
-                            <div className="item-row"><span className="item-name">Broccoli Bites</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Jalapeno Poppers</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Large Onion Rings</span><span className="item-price">$6.49</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Sides</h3>
-                            <div className="item-row"><span className="item-name">Cheesesticks</span><span className="item-price">$3.49</span></div>
-                            <div className="item-row"><span className="item-name">Wedges</span><span className="item-price">$2.49</span></div>
-                            <div className="item-row"><span className="item-name">Large Wedges</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Family Wedges</span><span className="item-price">$4.99</span></div>
-                            <div className="item-row"><span className="item-name">Tattertots</span><span className="item-price">$2.49</span></div>
-                            <div className="item-row"><span className="item-name">Fried Pickles/Tomatoes</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Fried Okra</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Corn Nuggets</span><span className="item-price">$3.49</span></div>
-                            <div className="item-row"><span className="item-name">Mini Tacos</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Breaded Mushrooms</span><span className="item-price">$3.49</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Sides</h3>
-                            <div className="item-row"><span className="item-name">Chicken Liver</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Chicken Gizzards</span><span className="item-price">$3.99</span></div>
-                            <div className="item-row"><span className="item-name">Chicken Cheese Tortilla</span><span className="item-price">$2.29</span></div>
-                        </div>
-                        <div className="menu-item">
-                            <h3>Additional</h3>
-                            <div className="item-row"><span className="item-name">Toast</span><span className="item-price">$0.79</span></div>
-                            <div className="item-row"><span className="item-name">2 Hashbrowns</span><span className="item-price">$1.29</span></div>
-                            <div className="item-row"><span className="item-name">Sauce Cup</span><span className="item-price">$0.49</span></div>
-                        </div>
-                    </div>
-                    <p className="note">Note: Prices are subject to change at any time. * Items contain egg products.</p>
-                    <p className="warning">Consuming raw or undercooked meat, poultry, seafood, or eggs may increase your risk of foodborne illness, especially if you have certain medical conditions.</p>
-                </div>
-            );
-        }
+                        {/* Promotions Section */}
+                        <section id="promotions" className="container mx-auto py-8">
+                            <h2 className="text-3xl font-bold mb-6 text-center">Promotions</h2>
+                            <div className="bg-yellow-100 p-4 rounded-lg shadow">
+                                {promotions.length ? (
+                                    promotions.map((promo, index) => (
+                                        <p key={index} className="text-lg text-center">{promo}</p>
+                                    ))
+                                ) : (
+                                    <p className="text-center">No promotions available.</p>
+                                )}
+                            </div>
+                        </section>
 
-        function GroceryPlaceholder() {
-            return (
-                <div className="section">
-                    <h2>Grocery Shopping</h2>
-                    <div className="placeholder">
-                        <p>Shop convenience store items (list coming soon). Add to cart and pick up with your food order!</p>
-                        <p><a href="#grocery" className="text-[#E8B923]">View Grocery Items (Coming Soon)</a></p>
+                        {/* Menu Section */}
+                        <section id="menu" className="container mx-auto py-8">
+                            <h2 className="text-3xl font-bold mb-6 text-center">Menu</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {menuItems.map(item => (
+                                    <MenuItem
+                                        key={item.name}
+                                        item={item}
+                                        onAddToCart={addToCart}
+                                        onRemoveFromCart={removeFromCart}
+                                        isInCart={cartItems.some(cartItem => cartItem.name === item.name)}
+                                    />
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Cart Section */}
+                        <Cart
+                            cartItems={cartItems}
+                            removeFromCart={removeFromCart}
+                            taxRate={0.0925}
+                            tipAmount={tipAmount}
+                            setTipAmount={setTipAmount}
+                            onPay={handlePayment}
+                        />
+
+                        {/* Reviews Section */}
+                        <section id="reviews" className="container mx-auto py-8">
+                            <h2 className="text-3xl font-bold mb-6 text-center">Reviews</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="bg-white p-4 rounded-lg shadow">
+                                    <p className="italic">"Best turkey sandwich in town! The staff are super friendly."</p>
+                                    <p className="text-right font-semibold mt-2">- Sarah M.</p>
+                                </div>
+                                <div className="bg-white p-4 rounded-lg shadow">
+                                    <p className="italic">"Quick stop for fuel and a coffee. Always a great experience!"</p>
+                                    <p className="text-right font-semibold mt-2">- John D.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* About Section */}
+                        <section id="about" className="container mx-auto py-8">
+                            <h2 className="text-3xl font-bold mb-6 text-center">About Us</h2>
+                            <div className="flex flex-col md:flex-row items-center">
+                                <img src="images/storefront.jpg" alt="Storefront" className="w-full md:w-1/2 h-64 object-cover rounded-lg mb-4 md:mb-0 md:mr-6" />
+                                <p className="text-lg">Julie's Fuel Stop, located conveniently in Knoxville, Tennessee, is a one-stop-shop offering a wide range of convenience and specialty products. With over 4 decades of experience as Sam and Jerry's Deli and Market, Julie's continues to fulfill diverse needs of the community. From grocery must-haves to satisfying deli delights and refueling options like high-quality gasoline, customers can find what they need and more. Additionally, Julie's Fuel Stop enhances its unique offerings with a smoke shop, beer collection, and novelty items including vapes, providing an enjoyable shopping experience for all.</p>
+                            </div>
+                        </section>
+
+                        {/* Contact Section */}
+                        <section id="contact" className="container mx-auto py-8">
+                            <h2 className="text-3xl font-bold mb-6 text-center">Contact Us</h2>
+                            <div className="text-center">
+                                <p className="text-lg mb-2">Email: juliesfuelstop@gmail.com</p>
+                                <p className="text-lg mb-2">Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914</p>
+                                <p className="text-lg">Phone: (865) 337-7493</p>
+                            </div>
+                        </section>
+
+                        {/* Footer */}
+                        <footer className="bg-gray-800 text-white p-4 text-center">
+                            <p>© 2025 Julie's Deli and Fuel Stop. All rights reserved.</p>
+                        </footer>
                     </div>
-                </div>
+                </ErrorBoundary>
             );
-        }
+        };
 
-        function Footer() {
-            return (
-                <footer className="footer">
-                    <p>© 2025 Julie's Deli and Fuel Stop. All rights reserved.</p>
-                    <p>Contact us at 865-337-7493</p>
-                </footer>
-            );
-        }
-
-        function App() {
-            return (
-                <div>
-                    <Navbar />
-                    <Hero />
-                    <div className="content">
-                        <div id="menu" className="section">
-                            <Menu />
-                        </div>
-                        <div id="grocery" className="section">
-                            <GroceryPlaceholder />
-                        </div>
-                        <div id="reviews" className="section">
-                            <Reviews />
-                        </div>
-                        <div id="about" className="section">
-                            <About />
-                        </div>
-                    </div>
-                    <Footer />
-                </div>
-            );
-        }
-
+        // Render the App
         ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
