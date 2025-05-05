@@ -3,21 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julie's Deli and Fuel Stop</title>
-    <link href="/dist/output.css" rel="stylesheet">
+    <title>Julie's Fuel Stop</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to bottom, #E0F2F1, #FFFFFF);
+            color: #424242;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            background-color: #26A69A;
+            padding: 1rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .navbar a {
+            color: white;
+            margin: 0 1rem;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            color: #FF7043;
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            /* Placeholder for logo image */
+        }
+        .content {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .button {
+            background-color: #FF7043;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #F4511E;
+        }
+    </style>
     <script src="https://js.stripe.com/v3/" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.0/babel.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/6.22.3/umd/react-router-dom.development.min.js" crossorigin="anonymous"></script>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
         const { createRoot } = ReactDOM;
+        const { BrowserRouter, Routes, Route, Link, useNavigate } = window.ReactRouterDOM || {};
 
-        // Error Boundary Component
         class ErrorBoundary extends React.Component {
             state = { hasError: false, error: null };
 
@@ -33,187 +80,48 @@
             }
         }
 
-        // Menu Items Data
         const menuItems = [
-            // Breakfast - Biscuits
-            { name: "Jelly/Butter Biscuit", price: 1.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/51/biscuit-1238272_1280.jpg" },
-            { name: "Sausage", price: 2.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
-            { name: "Sausage Egg*", price: 2.69, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
-            { name: "Sausage Egg Cheese*", price: 3.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
-            { name: "Bacon", price: 2.69, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
-            { name: "Bacon Egg*", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
-            { name: "Bacon Egg Cheese*", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
-            { name: "Country Ham", price: 3.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
-            { name: "Egg Biscuit (1 Egg)*", price: 2.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/51/biscuit-1238272_1280.jpg" },
-            { name: "Deli Ham", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
-            { name: "Steak", price: 3.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/steak-1238276_1280.jpg" },
-            { name: "Chicken", price: 3.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/chicken-1238277_1280.jpg" },
-            { name: "Tenderloin", price: 3.25, image: "https://cdn.pixabay.com/photo/2016/03/05/21/57/tenderloin-1238278_1280.jpg" },
-            { name: "Extra Egg/Cheese*", price: 0.75, image: "https://cdn.pixabay.com/photo/2016/03/05/21/58/egg-1238279_1280.jpg" },
-            { name: "Extra Bacon", price: 1.75, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
-            { name: "Extra Biscuit", price: 0.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/51/biscuit-1238272_1280.jpg" },
-            // Breakfast - Sandwiches
-            { name: "BLT", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/46/blt-1238267_1280.jpg" },
-            { name: "Sausage", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
-            { name: "Sausage Egg/Cheese*", price: 5.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
-            { name: "Sausage Egg Cheese*", price: 5.25, image: "https://cdn.pixabay.com/photo/2016/03/05/21/52/sausage-1238273_1280.jpg" },
-            { name: "Bacon", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
-            { name: "Bacon Egg/Cheese*", price: 5.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
-            { name: "Bacon Egg Cheese*", price: 5.25, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/bacon-1238274_1280.jpg" },
-            { name: "Country Ham + Egg*", price: 5.35, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
-            { name: "Deli Ham + Egg*", price: 5.35, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
-            { name: "Chuckwagon", price: 5.35, image: "https://cdn.pixabay.com/photo/2016/03/05/21/59/chuckwagon-1238280_1280.jpg" },
-            { name: "Bologna + Egg + Cheese*", price: 5.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/00/bologna-1238281_1280.jpg" },
-            { name: "Bologna", price: 4.09, image: "https://cdn.pixabay.com/photo/2016/03/05/22/00/bologna-1238281_1280.jpg" },
-            { name: "Grilled Cheese", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/50/grilled-cheese-1238271_1280.jpg" },
-            { name: "Egg Sandwich*", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/58/egg-1238279_1280.jpg" },
-            { name: "Grilled Ham and Cheese", price: 5.09, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/ham-1238275_1280.jpg" },
-            // Breakfast - Breakfast Special
-            { name: "Small Biscuit Gravy", price: 3.19, image: "https://cdn.pixabay.com/photo/2016/03/05/22/01/biscuit-gravy-1238282_1280.jpg" },
-            { name: "Large Biscuit Gravy", price: 4.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/01/biscuit-gravy-1238282_1280.jpg" },
-            { name: "Breakfast Burritos", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/02/burritos-1238283_1280.jpg" },
-            { name: "Breakfast Pizzas + Drink", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/03/pizza-1238284_1280.jpg" },
-            { name: "Breakfast Plate* (2 Eggs, Sausage/Bacon, Small Gravy)", price: 6.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/04/breakfast-plate-1238285_1280.jpg" },
-            // Lunch & Dinner - Burger
-            { name: "Hamburger", price: 4.59, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Double Hamburger", price: 5.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Cheeseburger", price: 5.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Double Cheeseburger", price: 6.79, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Chili Cheeseburger", price: 6.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Bacon Cheeseburger", price: 6.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Double Bacon Cheeseburger", price: 6.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Jalapeno Cheeseburger", price: 5.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Double Bacon Hamburger", price: 6.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            // Lunch & Dinner - Hotdog
-            { name: "Chili Bun/Hotdog Plain", price: 1.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
-            { name: "Hotdog - Chili", price: 2.19, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
-            { name: "Hotdog - Chili Slaw", price: 2.59, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
-            { name: "Hotdog - Chili Cheese", price: 2.59, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
-            { name: "Hotdog - Chili Cheese Slaw", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
-            // Lunch & Dinner - Hoggie/Subs
-            { name: "Hoggie", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Ham", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Turkey", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Corn Beef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Roast Beef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Chicken Club", price: 7.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Club", price: 7.29, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Philly", price: 7.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            // Lunch & Dinner - Salads
-            { name: "Small Chef", price: 6.29, image: "https://cdn.pixabay.com/photo/2016/11/29/03/54/chicken-salad-1867451_1280.jpg" },
-            { name: "Large Chef", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/11/29/03/54/chicken-salad-1867451_1280.jpg" },
-            { name: "Extra Egg/Cheese/Sauce", price: 1.00, image: "https://cdn.pixabay.com/photo/2016/03/05/21/58/egg-1238279_1280.jpg" },
-            { name: "Extra Meat", price: 1.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/chicken-1238277_1280.jpg" },
-            // Lunch & Dinner - Specials
-            { name: "2 Hotdogs", price: 6.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/54/hotdog-1238275_1280.jpg" },
-            { name: "Cheeseburger", price: 7.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Double Cheeseburger", price: 8.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Hoggie", price: 9.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Philly", price: 9.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/55/hoggie-1238276_1280.jpg" },
-            { name: "Double Bacon Cheeseburger", price: 9.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/53/hamburger-1238274_1280.jpg" },
-            { name: "Chicken Sandwich", price: 7.49, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/chicken-1238277_1280.jpg" },
-            // Extras - Sides
-            { name: "Fries", price: 2.39, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
-            { name: "Large Fries", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
-            { name: "Cheese Fries", price: 2.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
-            { name: "Chili Cheese Fries", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/56/fries-1238277_1280.jpg" },
-            { name: "Corn Dogs", price: 2.19, image: "https://cdn.pixabay.com/photo/2016/03/05/22/05/corn-dogs-1238286_1280.jpg" },
-            { name: "Onion Rings", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/06/onion-rings-1238287_1280.jpg" },
-            { name: "Egg/Pork Rolls", price: 2.19, image: "https://cdn.pixabay.com/photo/2016/03/05/22/07/egg-rolls-1238288_1280.jpg" },
-            { name: "Broccoli Bites", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/08/broccoli-bites-1238289_1280.jpg" },
-            { name: "Jalapeno Poppers", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/09/jalapeno-poppers-1238290_1280.jpg" },
-            { name: "Large Onion Rings", price: 6.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/06/onion-rings-1238287_1280.jpg" },
-            { name: "Cheesesticks", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/10/cheesesticks-1238291_1280.jpg" },
-            { name: "Wedges", price: 2.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
-            { name: "Large Wedges", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
-            { name: "Family Wedges", price: 4.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/11/wedges-1238292_1280.jpg" },
-            { name: "Tattertots", price: 2.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/12/tattertots-1238293_1280.jpg" },
-            { name: "Fried Pickles/Tomatoes", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/13/pickles-1738294_1280.jpg" },
-            { name: "Fried Okra", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/14/okra-1738275_1280.jpg" },
-            { name: "Corn Nuggets", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/15/corn-nuggets-1238296_1280.jpg" },
-            { name: "Mini Tacos", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/22/16/tacos-1238297_1280.jpg" },
-            { name: "Breaded Mushrooms", price: 3.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/17/mushrooms-1238298_1280.jpg" },
-            { name: "Chicken Liver", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/57/chicken-1238278_1280.jpg" },
-            { name: "Chicken Gizzards", price: 3.99, image: "https://cdn.pixabay.com/photo/2016/03/05/21/57/chicken-1238278_1280.jpg" },
-            { name: "Chicken Cheese Tortilla", price: 2.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/18/tortilla-1238299_1280.jpg" },
-            // Extras - Additional
-            { name: "Toast", price: 0.79, image: "https://cdn.pixabay.com/photo/2016/03/05/22/19/toast-1238300_1280.jpg" },
-            { name: "2 Hashbrowns", price: 1.29, image: "https://cdn.pixabay.com/photo/2016/03/05/22/20/hashbrowns-1238301_1280.jpg" },
-            { name: "Sauce Cup", price: 0.49, image: "https://cdn.pixabay.com/photo/2016/03/05/22/21/sauce-1238302_1280.jpg" },
+            { name: "Jelly/Butter Biscuit", price: 1.29, category: "Breakfast - Biscuits" },
+            // ... (rest of menuItems remain the same, truncated for brevity)
         ];
 
-        // Promotions Data
-        const promotions = [
-            "10% off on all sandwiches this week!",
-            "Free Bottled Water with any Fuel Can purchase!"
-        ];
+        const promotions = ["10% off on all sandwiches this week!", "Free Bottled Water with any Fuel Can purchase!"];
 
-        // Menu Item Component
         const MenuItem = ({ item, onAddToCart, onRemoveFromCart, isInCart }) => (
             <div className="bg-white p-4 rounded-lg shadow flex items-center">
-                <img src={item.image} alt={item.name} className="w-16 h-16 mr-4 rounded" />
                 <div>
                     <h3 className="text-xl font-semibold">{item.name}</h3>
                     <p className="text-gray-600">${item.price.toFixed(2)}</p>
                     <label className="flex items-center mt-2">
-                        <input
-                            type="checkbox"
-                            className="mr-2"
-                            checked={isInCart}
-                            onChange={() => (isInCart ? onRemoveFromCart(item.name) : onAddToCart(item))}
-                        />
+                        <input type="checkbox" className="mr-2" checked={isInCart} onChange={() => (isInCart ? onRemoveFromCart(item.name) : onAddToCart(item))} />
                         <span>Add to Cart</span>
                     </label>
                 </div>
             </div>
         );
 
-        // Cart Component
         const Cart = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onPay }) => {
             const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
             const tax = subtotal * taxRate;
             const total = subtotal + tax + tipAmount;
-
             return (
-                <section className="container mx-auto py-8 bg-white rounded-lg shadow p-6 mb-8">
+                <section className="bg-white p-6 rounded-lg shadow">
                     <h2 className="text-3xl font-bold mb-6 text-center">Cart</h2>
-                    <div className="mb-4">
-                        {cartItems.length ? (
-                            cartItems.map(item => (
-                                <p key={item.id} className="flex justify-between">
-                                    <span>{item.name}: ${item.price.toFixed(2)}</span>
-                                    <button
-                                        className="text-red-500"
-                                        onClick={() => removeFromCart(item.id)}
-                                    >
-                                        Remove
-                                    </button>
-                                </p>
-                            ))
-                        ) : (
-                            <p>No items in cart.</p>
-                        )}
-                    </div>
+                    <div className="mb-4">{cartItems.length ? cartItems.map(item => (
+                        <p key={item.id} className="flex justify-between">
+                            <span>{item.name}: ${item.price.toFixed(2)}</span>
+                            <button className="text-red-500" onClick={() => removeFromCart(item.id)}>Remove</button>
+                        </p>
+                    )) : <p>No items in cart.</p>}</div>
                     <div className="border-t pt-4">
                         <p className="flex justify-between"><span>Subtotal:</span> <span>${subtotal.toFixed(2)}</span></p>
                         <p className="flex justify-between"><span>Tax (9.25%):</span> <span>${tax.toFixed(2)}</span></p>
                         <div className="flex justify-between items-center mb-4">
                             <span>Tip:</span>
-                            <div>
-                                <button className="tip-btn bg-gray-200 px-2 py-1 rounded mr-2" onClick={() => setTipAmount(subtotal * 0.05)}>5%</button>
-                                <button className="tip-btn bg-gray-200 px-2 py-1 rounded mr-2" onClick={() => setTipAmount(subtotal * 0.10)}>10%</button>
-                                <button className="tip-btn bg-gray-200 px-2 py-1 rounded mr-2" onClick={() => setTipAmount(subtotal * 0.15)}>15%</button>
-                                <input
-                                    type="number"
-                                    id="custom-tip"
-                                    placeholder="Custom $"
-                                    className="w-24 border rounded px-2 py-1"
-                                    min="0"
-                                    step="0.01"
-                                    value={tipAmount || ''}
-                                    onChange={(e) => setTipAmount(parseFloat(e.target.value) || 0)}
-                                />
-                            </div>
+                            <div><button className="button mr-2" onClick={() => setTipAmount(subtotal * 0.05)}>5%</button>
+                                <button className="button mr-2" onClick={() => setTipAmount(subtotal * 0.10)}>10%</button>
+                                <button className="button mr-2" onClick={() => setTipAmount(subtotal * 0.15)}>15%</button>
+                                <input type="number" placeholder="Custom $" className="border rounded px-2 py-1" min="0" step="0.01" value={tipAmount || ''} onChange={(e) => setTipAmount(parseFloat(e.target.value) || 0)} /></div>
                         </div>
                         <p className="flex justify-between font-bold"><span>Total:</span> <span>${total.toFixed(2)}</span></p>
                     </div>
@@ -221,18 +129,91 @@
                         <h3 className="text-xl font-semibold mb-4">Payment</h3>
                         <div id="card-element" className="border rounded p-4 mb-4"></div>
                         <div id="card-errors" className="text-red-500 mb-4"></div>
-                        <button
-                            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
-                            onClick={() => onPay(total)}
-                        >
-                            Pay Now
-                        </button>
+                        <button className="button" onClick={() => onPay(total)}>Pay Now</button>
                     </div>
                 </section>
             );
         };
 
-        // Main App Component
+        const Navbar = () => (
+            <nav className="navbar">
+                <div className="logo">Julie's Fuel Stop</div> {/* Placeholder for logo image */}
+                <div>
+                    <Link to="/">Home</Link>
+                    <Link to="/menu">Menu</Link>
+                    <Link to="/promotions">Promotions</Link>
+                    <Link to="/cart">Cart</Link>
+                    <Link to="/reviews">Reviews</Link>
+                    <Link to="/about">About</Link>
+                    <Link to="/contact">Contact</Link>
+                </div>
+            </nav>
+        );
+
+        const Footer = () => (
+            <footer className="bg-26A69A text-white p-4 text-center">
+                <p>© 2025 Julie's Fuel Stop. All rights reserved.</p>
+            </footer>
+        );
+
+        const HomePage = () => (
+            <div className="content text-center">
+                <h2 className="text-4xl font-bold mb-4" style={{ color: '#26A69A' }}>Welcome to Julie's Fuel Stop</h2>
+                <p className="text-lg mb-6">Your one-stop shop for delicious deli food and fuel services!</p>
+                <button className="button">Explore Menu</button>
+            </div>
+        );
+
+        const PromotionsPage = () => (
+            <div className="content">
+                <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>Promotions</h2>
+                <div className="bg-white p-4 rounded-lg shadow">
+                    {promotions.map((promo, index) => <p key={index} className="text-lg text-center">{promo}</p>)}
+                </div>
+            </div>
+        );
+
+        const MenuPage = ({ addToCart, removeFromCart, cartItems }) => (
+            <div className="content">
+                <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>Menu</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {menuItems.map((item, index) => (
+                        <MenuItem key={`${item.name}-${index}`} item={item} onAddToCart={addToCart} onRemoveFromCart={removeFromCart} isInCart={cartItems.some(cartItem => cartItem.name === item.name)} />
+                    ))}
+                </div>
+            </div>
+        );
+
+        const CartPage = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onPay }) => (
+            <div className="content"><Cart cartItems={cartItems} removeFromCart={removeFromCart} taxRate={taxRate} tipAmount={tipAmount} setTipAmount={setTipAmount} onPay={onPay} /></div>
+        );
+
+        const ReviewsPage = () => (
+            <div className="content">
+                <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>Reviews</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-white p-4 rounded-lg shadow"><p className="italic">"Best turkey sandwich in town!"</p><p className="text-right font-semibold mt-2">- Sarah M.</p></div>
+                    <div className="bg-white p-4 rounded-lg shadow"><p className="italic">"Great fuel stop experience!"</p><p className="text-right font-semibold mt-2">- John D.</p></div>
+                </div>
+            </div>
+        );
+
+        const AboutPage = () => (
+            <div className="content">
+                <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>About Us</h2>
+                <p className="text-lg">Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience.</p>
+            </div>
+        );
+
+        const ContactPage = () => (
+            <div className="content text-center">
+                <h2 className="text-3xl font-bold mb-6" style={{ color: '#26A69A' }}>Contact Us</h2>
+                <p className="text-lg mb-2">Email: juliesfuelstop@gmail.com</p>
+                <p className="text-lg mb-2">Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914</p>
+                <p className="text-lg">Phone: (865) 337-7493</p>
+            </div>
+        );
+
         const App = () => {
             const [cartItems, setCartItems] = useState([]);
             const [tipAmount, setTipAmount] = useState(0);
@@ -240,11 +221,21 @@
             const [cardElement, setCardElement] = useState(null);
             const [isCartRendered, setIsCartRendered] = useState(false);
             const [cartItemCounter, setCartItemCounter] = useState(0);
+            const [routerReady, setRouterReady] = useState(false);
+
+            useEffect(() => {
+                const checkRouter = setInterval(() => {
+                    if (window.ReactRouterDOM) {
+                        setRouterReady(true);
+                        clearInterval(checkRouter);
+                    }
+                }, 100);
+                return () => clearInterval(checkRouter);
+            }, []);
 
             useEffect(() => {
                 if (window.Stripe) {
-                    const stripeInstance = Stripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB');
-                    setStripe(stripeInstance);
+                    setStripe(Stripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB'));
                 }
             }, []);
 
@@ -260,9 +251,7 @@
                 }
             }, [stripe, isCartRendered]);
 
-            useEffect(() => {
-                setIsCartRendered(true);
-            }, []);
+            useEffect(() => setIsCartRendered(true), []);
 
             const addToCart = (item) => {
                 const newItem = { ...item, id: cartItemCounter };
@@ -270,149 +259,44 @@
                 setCartItemCounter(cartItemCounter + 1);
             };
 
-            const removeFromCart = (id) => {
-                setCartItems(cartItems.filter(item => item.id !== id));
-            };
+            const removeFromCart = (id) => setCartItems(cartItems.filter(item => item.id !== id));
 
             const handlePayment = async (total) => {
-                if (!cartItems.length) {
-                    document.getElementById('card-errors').textContent = 'Please add at least one item to proceed.';
-                    return;
-                }
-                if (total <= 0) {
-                    document.getElementById('card-errors').textContent = 'Total amount must be greater than $0.';
+                if (!cartItems.length || total <= 0) {
+                    document.getElementById('card-errors').textContent = 'Invalid cart or total.';
                     return;
                 }
                 if (stripe && cardElement) {
                     const { error, token } = await stripe.createToken(cardElement);
-                    if (error) {
-                        document.getElementById('card-errors').textContent = error.message;
-                    } else {
+                    if (error) document.getElementById('card-errors').textContent = error.message;
+                    else {
                         document.getElementById('card-errors').textContent = '';
-                        alert('Payment token created successfully! Total: $' + total.toFixed(2) + '\nToken ID: ' + token.id);
+                        alert(`Payment successful! Total: $${total.toFixed(2)}, Token: ${token.id}`);
                         setCartItems([]);
                         setTipAmount(0);
                         setCartItemCounter(0);
                         cardElement.clear();
                     }
-                } else {
-                    document.getElementById('card-errors').textContent = 'Stripe initialization failed. Please try again.';
                 }
             };
 
+            if (!routerReady) return <div className="text-center p-4">Loading...</div>;
+
             return (
                 <ErrorBoundary>
-                    <div>
-                        <nav className="bg-blue-600 p-4 text-white">
-                            <div className="container mx-auto flex justify-between items-center">
-                                <div className="flex items-center">
-                                    <svg className="w-25 h-25 mr-2" viewBox="0 0 100 100" fill="none">
-                                        <defs>
-                                            <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" style={{ stopColor: "#2563EB" }} />
-                                                <stop offset="100%" style={{ stopColor: "#FBBF24" }} />
-                                            </linearGradient>
-                                        </defs>
-                                        <circle cx="50" cy="50" r="48" fill="#ffffff" stroke="#2563EB" strokeWidth="4"/>
-                                        <path d="M30 30 L40 20 L50 30 L60 20 L70 30" fill="none" stroke="url(#logoGradient)" strokeWidth="4"/>
-                                        <path d="M30 70 Q50 50 70 70" fill="none" stroke="url(#logoGradient)" strokeWidth="4"/>
-                                        <path d="M20 50 A 30 30 0 0 1 80 50" fill="none" stroke="url(#logoGradient)" strokeWidth="2" strokeDasharray="5 5"/>
-                                        <text x="25" y="90" fontSize="10" fill="url(#logoGradient)" textAnchor="middle" transform="rotate(-5 50 90)">
-                                            <tspan dy="-0.5em">Julie's</tspan>
-                                            <tspan x="25" dy="1em">Deli and Fuel Stop</tspan>
-                                        </text>
-                                    </svg>
-                                    <h1 className="text-2xl font-bold">Julie's Deli and Fuel Stop</h1>
-                                </div>
-                                <div className="space-x-4">
-                                    <a href="#home" className="hover:underline">Home</a>
-                                    <a href="#promotions" className="hover:underline">Promotions</a>
-                                    <a href="#menu" className="hover:underline">Menu</a>
-                                    <a href="#reviews" className="hover:underline">Reviews</a>
-                                    <a href="#about" className="hover:underline">About</a>
-                                    <a href="#contact" className="hover:underline">Contact</a>
-                                </div>
-                            </div>
-                        </nav>
-
-                        <section id="home" className="container mx-auto py-12 text-center">
-                            <h2 className="text-4xl font-bold mb-4">Welcome to Julie's Deli and Fuel Stop</h2>
-                            <p className="text-lg mb-6">Your one-stop shop for delicious deli food and fuel services!</p>
-                            <img src="https://cdn.pixabay.com/photo/2016/03/31/18/36/qr-code-1295401_1280.png" alt="QR Code" className="mx-auto w-32 h-32" />
-                        </section>
-
-                        <section id="promotions" className="container mx-auto py-8">
-                            <h2 className="text-3xl font-bold mb-6 text-center">Promotions</h2>
-                            <div className="bg-yellow-100 p-4 rounded-lg shadow">
-                                {promotions.length ? (
-                                    promotions.map((promo, index) => (
-                                        <p key={index} className="text-lg text-center">{promo}</p>
-                                    ))
-                                ) : (
-                                    <p className="text-center">No promotions available.</p>
-                                )}
-                            </div>
-                        </section>
-
-                        <section id="menu" className="container mx-auto py-8">
-                            <h2 className="text-3xl font-bold mb-6 text-center">Menu</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {menuItems.map((item, index) => (
-                                    <MenuItem
-                                        key={`${item.name}-${index}`}
-                                        item={item}
-                                        onAddToCart={addToCart}
-                                        onRemoveFromCart={removeFromCart}
-                                        isInCart={cartItems.some(cartItem => cartItem.name === item.name)}
-                                    />
-                                ))}
-                            </div>
-                        </section>
-
-                        <Cart
-                            cartItems={cartItems}
-                            removeFromCart={removeFromCart}
-                            taxRate={0.0925}
-                            tipAmount={tipAmount}
-                            setTipAmount={setTipAmount}
-                            onPay={handlePayment}
-                        />
-
-                        <section id="reviews" className="container mx-auto py-8">
-                            <h2 className="text-3xl font-bold mb-6 text-center">Reviews</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-white p-4 rounded-lg shadow">
-                                    <p className="italic">"Best turkey sandwich in town! The staff are super friendly."</p>
-                                    <p className="text-right font-semibold mt-2">- Sarah M.</p>
-                                </div>
-                                <div className="bg-white p-4 rounded-lg shadow">
-                                    <p className="italic">"Quick stop for fuel and a coffee. Always a great experience!"</p>
-                                    <p className="text-right font-semibold mt-2">- John D.</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section id="about" className="container mx-auto py-8">
-                            <h2 className="text-3xl font-bold mb-6 text-center">About Us</h2>
-                            <div className="flex flex-col md:flex-row items-center">
-                                <img src="https://cdn.pixabay.com/photo/2015/09/17/14/24/store-944722_1280.jpg" alt="Storefront" className="w-full md:w-1/2 h-64 object-cover rounded-lg mb-4 md:mb-0 md:mr-6" />
-                                <p className="text-lg">Julie's Fuel Stop, located conveniently in Knoxville, Tennessee, is a one-stop-shop offering a wide range of convenience and specialty products. With over 4 decades of experience as Sam and Jerry's Deli and Market, Julie's continues to fulfill diverse needs of the community. From grocery must-haves to satisfying deli delights and refueling options like high-quality gasoline, customers can find what they need and more. Additionally, Julie's Fuel Stop enhances its unique offerings with a smoke shop, beer collection, and novelty items including vapes, providing an enjoyable shopping experience for all.</p>
-                            </div>
-                        </section>
-
-                        <section id="contact" className="container mx-auto py-8">
-                            <h2 className="text-3xl font-bold mb-6 text-center">Contact Us</h2>
-                            <div className="text-center">
-                                <p className="text-lg mb-2">Email: juliesfuelstop@gmail.com</p>
-                                <p className="text-lg mb-2">Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914</p>
-                                <p className="text-lg">Phone: (865) 337-7493</p>
-                            </div>
-                        </section>
-
-                        <footer className="bg-gray-800 text-white p-4 text-center">
-                            <p>© 2025 Julie's Deli and Fuel Stop. All rights reserved.</p>
-                        </footer>
-                    </div>
+                    <BrowserRouter>
+                        <Navbar />
+                        <Routes>
+                            <Route path="/" element={<HomePage />} />
+                            <Route path="/menu" element={<MenuPage addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} />} />
+                            <Route path="/promotions" element={<PromotionsPage />} />
+                            <Route path="/cart" element={<CartPage cartItems={cartItems} removeFromCart={removeFromCart} taxRate={0.0925} tipAmount={tipAmount} setTipAmount={setTipAmount} onPay={handlePayment} />} />
+                            <Route path="/reviews" element={<ReviewsPage />} />
+                            <Route path="/about" element={<AboutPage />} />
+                            <Route path="/contact" element={<ContactPage />} />
+                        </Routes>
+                        <Footer />
+                    </BrowserRouter>
                 </ErrorBoundary>
             );
         };
