@@ -6,8 +6,8 @@
     <title>Julie's Deli and Fuel Stop</title>
     <link href="/dist/output.css" rel="stylesheet">
     <script src="https://js.stripe.com/v3/" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.0/babel.min.js" crossorigin="anonymous"></script>
 </head>
 <body class="bg-gray-100 font-sans">
@@ -15,6 +15,7 @@
 
     <script type="text/babel">
         const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
 
         // Error Boundary Component
         class ErrorBoundary extends React.Component {
@@ -179,11 +180,11 @@
                     <div className="mb-4">
                         {cartItems.length ? (
                             cartItems.map(item => (
-                                <p key={item.name} className="flex justify-between">
+                                <p key={item.id} className="flex justify-between">
                                     <span>{item.name}: ${item.price.toFixed(2)}</span>
                                     <button
                                         className="text-red-500"
-                                        onClick={() => removeFromCart(item.name)}
+                                        onClick={() => removeFromCart(item.id)}
                                     >
                                         Remove
                                     </button>
@@ -237,27 +238,40 @@
             const [tipAmount, setTipAmount] = useState(0);
             const [stripe, setStripe] = useState(null);
             const [cardElement, setCardElement] = useState(null);
+            const [isCartRendered, setIsCartRendered] = useState(false);
+            const [cartItemCounter, setCartItemCounter] = useState(0);
 
-            // Initialize Stripe
             useEffect(() => {
                 if (window.Stripe) {
                     const stripeInstance = Stripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB');
                     setStripe(stripeInstance);
-                    const elements = stripeInstance.elements();
-                    const card = elements.create('card');
-                    card.mount('#card-element');
-                    setCardElement(card);
-
-                    return () => card.destroy();
                 }
             }, []);
 
+            useEffect(() => {
+                if (stripe && isCartRendered) {
+                    const cardElementDiv = document.getElementById('card-element');
+                    if (cardElementDiv && !cardElement) {
+                        const elements = stripe.elements();
+                        const card = elements.create('card');
+                        card.mount('#card-element');
+                        setCardElement(card);
+                    }
+                }
+            }, [stripe, isCartRendered]);
+
+            useEffect(() => {
+                setIsCartRendered(true);
+            }, []);
+
             const addToCart = (item) => {
-                setCartItems([...cartItems, item]);
+                const newItem = { ...item, id: cartItemCounter };
+                setCartItems([...cartItems, newItem]);
+                setCartItemCounter(cartItemCounter + 1);
             };
 
-            const removeFromCart = (name) => {
-                setCartItems(cartItems.filter(item => item.name !== name));
+            const removeFromCart = (id) => {
+                setCartItems(cartItems.filter(item => item.id !== id));
             };
 
             const handlePayment = async (total) => {
@@ -278,6 +292,7 @@
                         alert('Payment token created successfully! Total: $' + total.toFixed(2) + '\nToken ID: ' + token.id);
                         setCartItems([]);
                         setTipAmount(0);
+                        setCartItemCounter(0);
                         cardElement.clear();
                     }
                 } else {
@@ -288,15 +303,14 @@
             return (
                 <ErrorBoundary>
                     <div>
-                        {/* Navbar */}
                         <nav className="bg-blue-600 p-4 text-white">
                             <div className="container mx-auto flex justify-between items-center">
                                 <div className="flex items-center">
                                     <svg className="w-25 h-25 mr-2" viewBox="0 0 100 100" fill="none">
                                         <defs>
                                             <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                                <stop offset="0%" style="stop-color:#2563EB;" />
-                                                <stop offset="100%" style="stop-color:#FBBF24;" />
+                                                <stop offset="0%" style={{ stopColor: "#2563EB" }} />
+                                                <stop offset="100%" style={{ stopColor: "#FBBF24" }} />
                                             </linearGradient>
                                         </defs>
                                         <circle cx="50" cy="50" r="48" fill="#ffffff" stroke="#2563EB" strokeWidth="4"/>
@@ -321,14 +335,12 @@
                             </div>
                         </nav>
 
-                        {/* Hero Section */}
                         <section id="home" className="container mx-auto py-12 text-center">
                             <h2 className="text-4xl font-bold mb-4">Welcome to Julie's Deli and Fuel Stop</h2>
                             <p className="text-lg mb-6">Your one-stop shop for delicious deli food and fuel services!</p>
                             <img src="https://cdn.pixabay.com/photo/2016/03/31/18/36/qr-code-1295401_1280.png" alt="QR Code" className="mx-auto w-32 h-32" />
                         </section>
 
-                        {/* Promotions Section */}
                         <section id="promotions" className="container mx-auto py-8">
                             <h2 className="text-3xl font-bold mb-6 text-center">Promotions</h2>
                             <div className="bg-yellow-100 p-4 rounded-lg shadow">
@@ -342,13 +354,12 @@
                             </div>
                         </section>
 
-                        {/* Menu Section */}
                         <section id="menu" className="container mx-auto py-8">
                             <h2 className="text-3xl font-bold mb-6 text-center">Menu</h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {menuItems.map(item => (
+                                {menuItems.map((item, index) => (
                                     <MenuItem
-                                        key={item.name}
+                                        key={`${item.name}-${index}`}
                                         item={item}
                                         onAddToCart={addToCart}
                                         onRemoveFromCart={removeFromCart}
@@ -358,7 +369,6 @@
                             </div>
                         </section>
 
-                        {/* Cart Section */}
                         <Cart
                             cartItems={cartItems}
                             removeFromCart={removeFromCart}
@@ -368,7 +378,6 @@
                             onPay={handlePayment}
                         />
 
-                        {/* Reviews Section */}
                         <section id="reviews" className="container mx-auto py-8">
                             <h2 className="text-3xl font-bold mb-6 text-center">Reviews</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -383,7 +392,6 @@
                             </div>
                         </section>
 
-                        {/* About Section */}
                         <section id="about" className="container mx-auto py-8">
                             <h2 className="text-3xl font-bold mb-6 text-center">About Us</h2>
                             <div className="flex flex-col md:flex-row items-center">
@@ -392,7 +400,6 @@
                             </div>
                         </section>
 
-                        {/* Contact Section */}
                         <section id="contact" className="container mx-auto py-8">
                             <h2 className="text-3xl font-bold mb-6 text-center">Contact Us</h2>
                             <div className="text-center">
@@ -402,7 +409,6 @@
                             </div>
                         </section>
 
-                        {/* Footer */}
                         <footer className="bg-gray-800 text-white p-4 text-center">
                             <p>© 2025 Julie's Deli and Fuel Stop. All rights reserved.</p>
                         </footer>
@@ -411,8 +417,9 @@
             );
         };
 
-        // Render the App
-        ReactDOM.render(<App />, document.getElementById('root'));
+        const rootElement = document.getElementById('root');
+        const root = createRoot(rootElement);
+        root.render(<App />);
     </script>
 </body>
 </html>
