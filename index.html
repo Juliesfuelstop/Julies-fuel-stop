@@ -32,12 +32,19 @@
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            /* Placeholder for logo image */
+            /* Placeholder for watercolor logo image */
         }
         .content {
             padding: 2rem;
             max-width: 1200px;
             margin: auto;
+        }
+        .card {
+            background: white;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .button {
             background-color: #FF7043;
@@ -55,7 +62,7 @@
     <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.development.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.development.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.0/babel.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/6.22.3/umd/react-router-dom.development.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/6.22.3/react-router-dom.umd.min.js" onerror="this.src='https://unpkg.com/react-router-dom@6.22.3/umd/react-router-dom.development.min.js'" crossorigin="anonymous"></script>
 </head>
 <body>
     <div id="root"></div>
@@ -82,15 +89,16 @@
 
         const menuItems = [
             { name: "Jelly/Butter Biscuit", price: 1.29, category: "Breakfast - Biscuits" },
-            // ... (rest of menuItems remain the same, truncated for brevity)
+            { name: "Sausage", price: 2.29, category: "Breakfast - Biscuits" },
+            // ... (rest of menuItems truncated for brevity)
         ];
 
         const promotions = ["10% off on all sandwiches this week!", "Free Bottled Water with any Fuel Can purchase!"];
 
         const MenuItem = ({ item, onAddToCart, onRemoveFromCart, isInCart }) => (
-            <div className="bg-white p-4 rounded-lg shadow flex items-center">
+            <div className="card flex items-center">
                 <div>
-                    <h3 className="text-xl font-semibold">{item.name}</h3>
+                    <h3 className="text-xl font-semibold" style={{ color: '#26A69A' }}>{item.name}</h3>
                     <p className="text-gray-600">${item.price.toFixed(2)}</p>
                     <label className="flex items-center mt-2">
                         <input type="checkbox" className="mr-2" checked={isInCart} onChange={() => (isInCart ? onRemoveFromCart(item.name) : onAddToCart(item))} />
@@ -105,8 +113,8 @@
             const tax = subtotal * taxRate;
             const total = subtotal + tax + tipAmount;
             return (
-                <section className="bg-white p-6 rounded-lg shadow">
-                    <h2 className="text-3xl font-bold mb-6 text-center">Cart</h2>
+                <div className="card">
+                    <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>Cart</h2>
                     <div className="mb-4">{cartItems.length ? cartItems.map(item => (
                         <p key={item.id} className="flex justify-between">
                             <span>{item.name}: ${item.price.toFixed(2)}</span>
@@ -126,18 +134,18 @@
                         <p className="flex justify-between font-bold"><span>Total:</span> <span>${total.toFixed(2)}</span></p>
                     </div>
                     <div className="mt-6">
-                        <h3 className="text-xl font-semibold mb-4">Payment</h3>
+                        <h3 className="text-xl font-semibold mb-4" style={{ color: '#26A69A' }}>Payment</h3>
                         <div id="card-element" className="border rounded p-4 mb-4"></div>
                         <div id="card-errors" className="text-red-500 mb-4"></div>
                         <button className="button" onClick={() => onPay(total)}>Pay Now</button>
                     </div>
-                </section>
+                </div>
             );
         };
 
         const Navbar = () => (
             <nav className="navbar">
-                <div className="logo">Julie's Fuel Stop</div> {/* Placeholder for logo image */}
+                <div className="logo">Julie's Fuel Stop</div> {/* Placeholder for watercolor logo */}
                 <div>
                     <Link to="/">Home</Link>
                     <Link to="/menu">Menu</Link>
@@ -167,7 +175,7 @@
         const PromotionsPage = () => (
             <div className="content">
                 <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>Promotions</h2>
-                <div className="bg-white p-4 rounded-lg shadow">
+                <div className="card">
                     {promotions.map((promo, index) => <p key={index} className="text-lg text-center">{promo}</p>)}
                 </div>
             </div>
@@ -192,8 +200,8 @@
             <div className="content">
                 <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>Reviews</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="bg-white p-4 rounded-lg shadow"><p className="italic">"Best turkey sandwich in town!"</p><p className="text-right font-semibold mt-2">- Sarah M.</p></div>
-                    <div className="bg-white p-4 rounded-lg shadow"><p className="italic">"Great fuel stop experience!"</p><p className="text-right font-semibold mt-2">- John D.</p></div>
+                    <div className="card"><p className="italic">"Best turkey sandwich in town!"</p><p className="text-right font-semibold mt-2">- Sarah M.</p></div>
+                    <div className="card"><p className="italic">"Great fuel stop experience!"</p><p className="text-right font-semibold mt-2">- John D.</p></div>
                 </div>
             </div>
         );
@@ -201,16 +209,20 @@
         const AboutPage = () => (
             <div className="content">
                 <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#26A69A' }}>About Us</h2>
-                <p className="text-lg">Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience.</p>
+                <div className="card">
+                    <p className="text-lg">Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience.</p>
+                </div>
             </div>
         );
 
         const ContactPage = () => (
             <div className="content text-center">
                 <h2 className="text-3xl font-bold mb-6" style={{ color: '#26A69A' }}>Contact Us</h2>
-                <p className="text-lg mb-2">Email: juliesfuelstop@gmail.com</p>
-                <p className="text-lg mb-2">Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914</p>
-                <p className="text-lg">Phone: (865) 337-7493</p>
+                <div className="card">
+                    <p className="text-lg mb-2">Email: juliesfuelstop@gmail.com</p>
+                    <p className="text-lg mb-2">Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914</p>
+                    <p className="text-lg">Phone: (865) 337-7493</p>
+                </div>
             </div>
         );
 
