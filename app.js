@@ -221,10 +221,23 @@ const Cart = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onP
 
 const Navbar = () => {
   const cartItems = React.useContext ? React.useContext(window.cartContext || { cartItems: [] }) : [];
+  const [logoError, setLogoError] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = '/images/logo.png';
+    img.onload = () => setLogoError(false);
+    img.onerror = () => setLogoError(true);
+  }, []);
+
   return (
     <nav className="navbar">
       <div className="logo">
-        <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" />
+        {logoError ? (
+          <span>Logo not found</span>
+        ) : (
+          <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => setLogoError(true)} />
+        )}
       </div>
       <div>
         <Link to="/">Home</Link>
@@ -272,24 +285,34 @@ const PromotionsPage = () => (
   </div>
 );
 
-const MenuPage = ({ addToCart, removeFromCart, cartItems }) => (
-  <div className="content">
-    <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
-      Menu
-    </h2>
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {menuItems.map((item, index) => (
-        <MenuItem
-          key={`${item.name}-${index}`}
-          item={item}
-          onAddToCart={addToCart}
-          onRemoveFromCart={removeFromCart}
-          isInCart={cartItems.some((cartItem) => cartItem.name === item.name)}
-        />
+const MenuPage = ({ addToCart, removeFromCart, cartItems }) => {
+  const categories = [...new Set(menuItems.map(item => item.category))];
+  console.log("Menu Items:", menuItems); // Debug log
+  return (
+    <div className="content">
+      <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
+        Menu
+      </h2>
+      {categories.map(category => (
+        <div key={category} className="mb-6">
+          <h3 className="text-2xl font-semibold mb-4" style={{ color: '#87CEEB' }}>{category}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {menuItems.filter(item => item.category === category).map((item, index) => (
+              <MenuItem
+                key={`${item.name}-${index}`}
+                item={item}
+                onAddToCart={addToCart}
+                onRemoveFromCart={removeFromCart}
+                isInCart={cartItems.some((cartItem) => cartItem.name === item.name)}
+              />
+            ))}
+          </div>
+        </div>
       ))}
+      {menuItems.length === 0 && <p>No menu items available.</p>}
     </div>
-  </div>
-);
+  );
+};
 
 const CartPage = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onPay }) => (
   <div className="content">
