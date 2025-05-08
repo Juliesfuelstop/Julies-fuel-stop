@@ -225,7 +225,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = '/images/logo.png';
+    img.src = '/public/images/logo.png'; // Updated path to public directory
     img.onload = () => setLogoError(false);
     img.onerror = () => setLogoError(true);
   }, []);
@@ -234,9 +234,9 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="logo">
         {logoError ? (
-          <span>Logo not found</span>
+          <span>Logo not found (Check /public/images/logo.png)</span>
         ) : (
-          <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => setLogoError(true)} />
+          <img src="/public/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => setLogoError(true)} />
         )}
       </div>
       <div>
@@ -287,7 +287,8 @@ const PromotionsPage = () => (
 
 const MenuPage = ({ addToCart, removeFromCart, cartItems }) => {
   const categories = [...new Set(menuItems.map(item => item.category))];
-  console.log("Menu Items:", menuItems); // Debug log
+  console.log("Menu Items Count:", menuItems.length); // Debug log for item count
+  console.log("Menu Items:", menuItems); // Debug log for full array
   return (
     <div className="content">
       <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
