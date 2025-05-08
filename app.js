@@ -224,11 +224,11 @@ const Navbar = ({ cartItems }) => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = '/public/images/logo.png';
+    img.src = '/images/logo.png'; // Updated path
     img.onload = () => setLogoError(false);
     img.onerror = () => {
       setLogoError(true);
-      console.error("Logo load failed: Check /public/images/logo.png on server");
+      console.error("Logo load failed: Check /images/logo.png on server");
     };
   }, []);
 
@@ -236,9 +236,9 @@ const Navbar = ({ cartItems }) => {
     <nav className="navbar">
       <div className="logo">
         {logoError ? (
-          <span>Logo not found (Check /public/images/logo.png)</span>
+          <span>Logo not found (Check /images/logo.png)</span>
         ) : (
-          <img src="/public/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => {
+          <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => {
             setLogoError(true);
             console.error("Logo load error during render");
           }} />

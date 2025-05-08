@@ -548,19 +548,19 @@ const Navbar = _ref3 => {
   const [logoError, setLogoError] = useState(false);
   useEffect(() => {
     const img = new Image();
-    img.src = '/public/images/logo.png';
+    img.src = '/images/logo.png'; // Updated path
     img.onload = () => setLogoError(false);
     img.onerror = () => {
       setLogoError(true);
-      console.error("Logo load failed: Check /public/images/logo.png on server");
+      console.error("Logo load failed: Check /images/logo.png on server");
     };
   }, []);
   return /*#__PURE__*/React.createElement("nav", {
     className: "navbar"
   }, /*#__PURE__*/React.createElement("div", {
     className: "logo"
-  }, logoError ? /*#__PURE__*/React.createElement("span", null, "Logo not found (Check /public/images/logo.png)") : /*#__PURE__*/React.createElement("img", {
-    src: "/public/images/logo.png",
+  }, logoError ? /*#__PURE__*/React.createElement("span", null, "Logo not found (Check /images/logo.png)") : /*#__PURE__*/React.createElement("img", {
+    src: "/images/logo.png",
     alt: "Julie's Fuel Stop Logo",
     className: "logo-img",
     onError: () => {
