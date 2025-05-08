@@ -225,9 +225,12 @@ const Navbar = () => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = '/public/images/logo.png'; // Updated path to public directory
+    img.src = '/public/images/logo.png';
     img.onload = () => setLogoError(false);
-    img.onerror = () => setLogoError(true);
+    img.onerror = () => {
+      setLogoError(true);
+      console.error("Logo load failed: Check /public/images/logo.png on server");
+    };
   }, []);
 
   return (
@@ -236,7 +239,10 @@ const Navbar = () => {
         {logoError ? (
           <span>Logo not found (Check /public/images/logo.png)</span>
         ) : (
-          <img src="/public/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => setLogoError(true)} />
+          <img src="/public/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => {
+            setLogoError(true);
+            console.error("Logo load error during render");
+          }} />
         )}
       </div>
       <div>
@@ -287,8 +293,10 @@ const PromotionsPage = () => (
 
 const MenuPage = ({ addToCart, removeFromCart, cartItems }) => {
   const categories = [...new Set(menuItems.map(item => item.category))];
-  console.log("Menu Items Count:", menuItems.length); // Debug log for item count
-  console.log("Menu Items:", menuItems); // Debug log for full array
+  useEffect(() => {
+    console.log("MenuPage mounted - Items Count:", menuItems.length);
+    console.log("Menu Items:", menuItems);
+  }, []);
   return (
     <div className="content">
       <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
@@ -425,6 +433,11 @@ const App = () => {
   }, []);
 
   useEffect(() => {
+    // Initialize window.cartContext
+    window.cartContext = { cartItems: [] };
+  }, []);
+
+  useEffect(() => {
     if (window.Stripe) {
       setStripe(Stripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB'));
     }
@@ -476,9 +489,6 @@ const App = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <div style={{ display: 'none' }}>
-          <script>window.cartContext = { cartItems: [] };</script>
-        </div>
         <Navbar />
         <Switch>
           <Route exact path="/" component={HomePage} />
