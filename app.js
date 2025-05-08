@@ -219,8 +219,7 @@ const Cart = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onP
   );
 };
 
-const Navbar = () => {
-  const cartItems = React.useContext ? React.useContext(window.cartContext || { cartItems: [] }) : [];
+const Navbar = ({ cartItems }) => {
   const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
@@ -433,11 +432,6 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    // Initialize window.cartContext
-    window.cartContext = { cartItems: [] };
-  }, []);
-
-  useEffect(() => {
     if (window.Stripe) {
       setStripe(Stripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB'));
     }
@@ -489,7 +483,7 @@ const App = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <Navbar />
+        <Navbar cartItems={cartItems} />
         <Switch>
           <Route exact path="/" component={HomePage} />
           <Route
