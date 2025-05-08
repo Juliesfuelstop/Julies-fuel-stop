@@ -63,9 +63,39 @@
     name: "Sausage",
     price: 2.29,
     category: "Breakfast - Biscuits"
-  }
-  // ... (rest of menuItems truncated for brevity)
-  ];
+  }, {
+    name: "Bacon, Egg & Cheese Biscuit",
+    price: 3.49,
+    category: "Breakfast - Biscuits"
+  }, {
+    name: "Turkey Sandwich",
+    price: 4.99,
+    category: "Lunch - Sandwiches"
+  }, {
+    name: "Ham & Cheese Sandwich",
+    price: 4.79,
+    category: "Lunch - Sandwiches"
+  }, {
+    name: "Chicken Salad Sandwich",
+    price: 5.29,
+    category: "Lunch - Sandwiches"
+  }, {
+    name: "Regular Coffee",
+    price: 1.49,
+    category: "Drinks"
+  }, {
+    name: "Bottled Water",
+    price: 1.99,
+    category: "Drinks"
+  }, {
+    name: "Fuel Can (1 Gallon)",
+    price: 6.99,
+    category: "Fuel & Supplies"
+  }, {
+    name: "Oil (1 Quart)",
+    price: 4.49,
+    category: "Fuel & Supplies"
+  }];
   const promotions = ["10% off on all sandwiches this week!", "Free Bottled Water with any Fuel Can purchase!"];
   const MenuItem = _ref => {
     let {
