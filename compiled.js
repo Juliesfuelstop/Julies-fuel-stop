@@ -1,16 +1,16 @@
 (function (global, factory) {
   if (typeof define === "function" && define.amd) {
-    define(["react/jsx-runtime"], factory);
+    define([], factory);
   } else if (typeof exports !== "undefined") {
-    factory(require("react/jsx-runtime"));
+    factory();
   } else {
     var mod = {
       exports: {}
     };
-    factory(global.jsxRuntime);
+    factory();
     global.app = mod.exports;
   }
-})(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : this, function (_jsxRuntime) {
+})(typeof globalThis !== "undefined" ? globalThis : typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
   function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
@@ -48,10 +48,9 @@
     }
     render() {
       if (this.state.hasError) {
-        return /*#__PURE__*/(0, _jsxRuntime.jsxs)("h2", {
-          className: "text-red-500 text-center p-4",
-          children: ["Something went wrong: ", this.state.error.message]
-        });
+        return /*#__PURE__*/React.createElement("h2", {
+          className: "text-red-500 text-center p-4"
+        }, "Something went wrong: ", this.state.error.message);
       }
       return this.props.children;
     }
@@ -75,31 +74,23 @@
       onRemoveFromCart,
       isInCart
     } = _ref;
-    return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-      className: "card flex items-center",
-      children: /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h3", {
-          className: "text-xl font-semibold",
-          style: {
-            color: '#26A69A'
-          },
-          children: item.name
-        }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("p", {
-          className: "text-gray-600",
-          children: ["$", item.price.toFixed(2)]
-        }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("label", {
-          className: "flex items-center mt-2",
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-            type: "checkbox",
-            className: "mr-2",
-            checked: isInCart,
-            onChange: () => isInCart ? onRemoveFromCart(item.name) : onAddToCart(item)
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-            children: "Add to Cart"
-          })]
-        })]
-      })
-    });
+    return /*#__PURE__*/React.createElement("div", {
+      className: "card flex items-center"
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+      className: "text-xl font-semibold",
+      style: {
+        color: '#26A69A'
+      }
+    }, item.name), /*#__PURE__*/React.createElement("p", {
+      className: "text-gray-600"
+    }, "$", item.price.toFixed(2)), /*#__PURE__*/React.createElement("label", {
+      className: "flex items-center mt-2"
+    }, /*#__PURE__*/React.createElement("input", {
+      type: "checkbox",
+      className: "mr-2",
+      checked: isInCart,
+      onChange: () => isInCart ? onRemoveFromCart(item.name) : onAddToCart(item)
+    }), /*#__PURE__*/React.createElement("span", null, "Add to Cart"))));
   };
   const Cart = _ref2 => {
     let {
@@ -113,193 +104,135 @@
     const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
     const tax = subtotal * taxRate;
     const total = subtotal + tax + tipAmount;
-    return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-      className: "card",
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
-        className: "text-3xl font-bold mb-6 text-center",
-        style: {
-          color: '#26A69A'
-        },
-        children: "Cart"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-        className: "mb-4",
-        children: cartItems.length ? cartItems.map(item => /*#__PURE__*/(0, _jsxRuntime.jsxs)("p", {
-          className: "flex justify-between",
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
-            children: [item.name, ": $", item.price.toFixed(2)]
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-            className: "text-red-500",
-            onClick: () => removeFromCart(item.id),
-            children: "Remove"
-          })]
-        }, item.id)) : /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          children: "No items in cart."
-        })
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "border-t pt-4",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("p", {
-          className: "flex justify-between",
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-            children: "Subtotal:"
-          }), " ", /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
-            children: ["$", subtotal.toFixed(2)]
-          })]
-        }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("p", {
-          className: "flex justify-between",
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-            children: "Tax (9.25%):"
-          }), " ", /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
-            children: ["$", tax.toFixed(2)]
-          })]
-        }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-          className: "flex justify-between items-center mb-4",
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-            children: "Tip:"
-          }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-            children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-              className: "button mr-2",
-              onClick: () => setTipAmount(subtotal * 0.05),
-              children: "5%"
-            }), /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-              className: "button mr-2",
-              onClick: () => setTipAmount(subtotal * 0.10),
-              children: "10%"
-            }), /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-              className: "button mr-2",
-              onClick: () => setTipAmount(subtotal * 0.15),
-              children: "15%"
-            }), /*#__PURE__*/(0, _jsxRuntime.jsx)("input", {
-              type: "number",
-              placeholder: "Custom $",
-              className: "border rounded px-2 py-1",
-              min: "0",
-              step: "0.01",
-              value: tipAmount || '',
-              onChange: e => setTipAmount(parseFloat(e.target.value) || 0)
-            })]
-          })]
-        }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("p", {
-          className: "flex justify-between font-bold",
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("span", {
-            children: "Total:"
-          }), " ", /*#__PURE__*/(0, _jsxRuntime.jsxs)("span", {
-            children: ["$", total.toFixed(2)]
-          })]
-        })]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "mt-6",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h3", {
-          className: "text-xl font-semibold mb-4",
-          style: {
-            color: '#26A69A'
-          },
-          children: "Payment"
-        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-          id: "card-element",
-          className: "border rounded p-4 mb-4"
-        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-          id: "card-errors",
-          className: "text-red-500 mb-4"
-        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-          className: "button",
-          onClick: () => onPay(total),
-          children: "Pay Now"
-        })]
-      })]
-    });
-  };
-  const Navbar = () => /*#__PURE__*/(0, _jsxRuntime.jsxs)("nav", {
-    className: "navbar",
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-      className: "logo",
-      children: "Julie's Fuel Stop"
-    }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-        to: "/",
-        children: "Home"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-        to: "/menu",
-        children: "Menu"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-        to: "/promotions",
-        children: "Promotions"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-        to: "/cart",
-        children: "Cart"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-        to: "/reviews",
-        children: "Reviews"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-        to: "/about",
-        children: "About"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Link, {
-        to: "/contact",
-        children: "Contact"
-      })]
-    })]
-  });
-  const Footer = () => /*#__PURE__*/(0, _jsxRuntime.jsx)("footer", {
-    className: "bg-26A69A text-white p-4 text-center",
-    children: /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-      children: "\xA9 2025 Julie's Fuel Stop. All rights reserved."
-    })
-  });
-  const HomePage = () => /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-    className: "content text-center",
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
-      className: "text-4xl font-bold mb-4",
-      style: {
-        color: '#26A69A'
-      },
-      children: "Welcome to Julie's Fuel Stop"
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-      className: "text-lg mb-6",
-      children: "Your one-stop shop for delicious deli food and fuel services!"
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("button", {
-      className: "button",
-      children: "Explore Menu"
-    })]
-  });
-  const PromotionsPage = () => /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-    className: "content",
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "card"
+    }, /*#__PURE__*/React.createElement("h2", {
       className: "text-3xl font-bold mb-6 text-center",
       style: {
         color: '#26A69A'
-      },
-      children: "Promotions"
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-      className: "card",
-      children: promotions.map((promo, index) => /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-        className: "text-lg text-center",
-        children: promo
-      }, index))
-    })]
-  });
+      }
+    }, "Cart"), /*#__PURE__*/React.createElement("div", {
+      className: "mb-4"
+    }, cartItems.length ? cartItems.map(item => /*#__PURE__*/React.createElement("p", {
+      className: "flex justify-between",
+      key: item.id
+    }, /*#__PURE__*/React.createElement("span", null, item.name, ": $", item.price.toFixed(2)), /*#__PURE__*/React.createElement("button", {
+      className: "text-red-500",
+      onClick: () => removeFromCart(item.id)
+    }, "Remove"))) : /*#__PURE__*/React.createElement("p", null, "No items in cart.")), /*#__PURE__*/React.createElement("div", {
+      className: "border-t pt-4"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "flex justify-between"
+    }, /*#__PURE__*/React.createElement("span", null, "Subtotal:"), " ", /*#__PURE__*/React.createElement("span", null, "$", subtotal.toFixed(2))), /*#__PURE__*/React.createElement("p", {
+      className: "flex justify-between"
+    }, /*#__PURE__*/React.createElement("span", null, "Tax (9.25%):"), " ", /*#__PURE__*/React.createElement("span", null, "$", tax.toFixed(2))), /*#__PURE__*/React.createElement("div", {
+      className: "flex justify-between items-center mb-4"
+    }, /*#__PURE__*/React.createElement("span", null, "Tip:"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+      className: "button mr-2",
+      onClick: () => setTipAmount(subtotal * 0.05)
+    }, "5%"), /*#__PURE__*/React.createElement("button", {
+      className: "button mr-2",
+      onClick: () => setTipAmount(subtotal * 0.10)
+    }, "10%"), /*#__PURE__*/React.createElement("button", {
+      className: "button mr-2",
+      onClick: () => setTipAmount(subtotal * 0.15)
+    }, "15%"), /*#__PURE__*/React.createElement("input", {
+      type: "number",
+      placeholder: "Custom $",
+      className: "border rounded px-2 py-1",
+      min: "0",
+      step: "0.01",
+      value: tipAmount || '',
+      onChange: e => setTipAmount(parseFloat(e.target.value) || 0)
+    }))), /*#__PURE__*/React.createElement("p", {
+      className: "flex justify-between font-bold"
+    }, /*#__PURE__*/React.createElement("span", null, "Total:"), " ", /*#__PURE__*/React.createElement("span", null, "$", total.toFixed(2)))), /*#__PURE__*/React.createElement("div", {
+      className: "mt-6"
+    }, /*#__PURE__*/React.createElement("h3", {
+      className: "text-xl font-semibold mb-4",
+      style: {
+        color: '#26A69A'
+      }
+    }, "Payment"), /*#__PURE__*/React.createElement("div", {
+      id: "card-element",
+      className: "border rounded p-4 mb-4"
+    }), /*#__PURE__*/React.createElement("div", {
+      id: "card-errors",
+      className: "text-red-500 mb-4"
+    }), /*#__PURE__*/React.createElement("button", {
+      className: "button",
+      onClick: () => onPay(total)
+    }, "Pay Now")));
+  };
+  const Navbar = () => /*#__PURE__*/React.createElement("nav", {
+    className: "navbar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "logo"
+  }, "Julie's Fuel Stop"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Link, {
+    to: "/"
+  }, "Home"), /*#__PURE__*/React.createElement(Link, {
+    to: "/menu"
+  }, "Menu"), /*#__PURE__*/React.createElement(Link, {
+    to: "/promotions"
+  }, "Promotions"), /*#__PURE__*/React.createElement(Link, {
+    to: "/cart"
+  }, "Cart"), /*#__PURE__*/React.createElement(Link, {
+    to: "/reviews"
+  }, "Reviews"), /*#__PURE__*/React.createElement(Link, {
+    to: "/about"
+  }, "About"), /*#__PURE__*/React.createElement(Link, {
+    to: "/contact"
+  }, "Contact")));
+  const Footer = () => /*#__PURE__*/React.createElement("footer", {
+    className: "bg-26A69A text-white p-4 text-center"
+  }, /*#__PURE__*/React.createElement("p", null, "\xA9 2025 Julie's Fuel Stop. All rights reserved."));
+  const HomePage = () => /*#__PURE__*/React.createElement("div", {
+    className: "content text-center"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-4xl font-bold mb-4",
+    style: {
+      color: '#26A69A'
+    }
+  }, "Welcome to Julie's Fuel Stop"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg mb-6"
+  }, "Your one-stop shop for delicious deli food and fuel services!"), /*#__PURE__*/React.createElement("button", {
+    className: "button"
+  }, "Explore Menu"));
+  const PromotionsPage = () => /*#__PURE__*/React.createElement("div", {
+    className: "content"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-3xl font-bold mb-6 text-center",
+    style: {
+      color: '#26A69A'
+    }
+  }, "Promotions"), /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, promotions.map((promo, index) => /*#__PURE__*/React.createElement("p", {
+    className: "text-lg text-center",
+    key: index
+  }, promo))));
   const MenuPage = _ref3 => {
     let {
       addToCart,
       removeFromCart,
       cartItems
     } = _ref3;
-    return /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-      className: "content",
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
-        className: "text-3xl font-bold mb-6 text-center",
-        style: {
-          color: '#26A69A'
-        },
-        children: "Menu"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-        className: "grid grid-cols-1 md:grid-cols-3 gap-6",
-        children: menuItems.map((item, index) => /*#__PURE__*/(0, _jsxRuntime.jsx)(MenuItem, {
-          item: item,
-          onAddToCart: addToCart,
-          onRemoveFromCart: removeFromCart,
-          isInCart: cartItems.some(cartItem => cartItem.name === item.name)
-        }, "".concat(item.name, "-").concat(index)))
-      })]
-    });
+    return /*#__PURE__*/React.createElement("div", {
+      className: "content"
+    }, /*#__PURE__*/React.createElement("h2", {
+      className: "text-3xl font-bold mb-6 text-center",
+      style: {
+        color: '#26A69A'
+      }
+    }, "Menu"), /*#__PURE__*/React.createElement("div", {
+      className: "grid grid-cols-1 md:grid-cols-3 gap-6"
+    }, menuItems.map((item, index) => /*#__PURE__*/React.createElement(MenuItem, {
+      key: "".concat(item.name, "-").concat(index),
+      item: item,
+      onAddToCart: addToCart,
+      onRemoveFromCart: removeFromCart,
+      isInCart: cartItems.some(cartItem => cartItem.name === item.name)
+    }))));
   };
   const CartPage = _ref4 => {
     let {
@@ -310,87 +243,67 @@
       setTipAmount,
       onPay
     } = _ref4;
-    return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-      className: "content",
-      children: /*#__PURE__*/(0, _jsxRuntime.jsx)(Cart, {
-        cartItems: cartItems,
-        removeFromCart: removeFromCart,
-        taxRate: taxRate,
-        tipAmount: tipAmount,
-        setTipAmount: setTipAmount,
-        onPay: onPay
-      })
-    });
+    return /*#__PURE__*/React.createElement("div", {
+      className: "content"
+    }, /*#__PURE__*/React.createElement(Cart, {
+      cartItems: cartItems,
+      removeFromCart: removeFromCart,
+      taxRate: taxRate,
+      tipAmount: tipAmount,
+      setTipAmount: setTipAmount,
+      onPay: onPay
+    }));
   };
-  const ReviewsPage = () => /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-    className: "content",
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
-      className: "text-3xl font-bold mb-6 text-center",
-      style: {
-        color: '#26A69A'
-      },
-      children: "Reviews"
-    }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-      className: "grid grid-cols-1 md:grid-cols-2 gap-6",
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "card",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "italic",
-          children: "\"Best turkey sandwich in town!\""
-        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "text-right font-semibold mt-2",
-          children: "- Sarah M."
-        })]
-      }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-        className: "card",
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "italic",
-          children: "\"Great fuel stop experience!\""
-        }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-          className: "text-right font-semibold mt-2",
-          children: "- John D."
-        })]
-      })]
-    })]
-  });
-  const AboutPage = () => /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-    className: "content",
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
-      className: "text-3xl font-bold mb-6 text-center",
-      style: {
-        color: '#26A69A'
-      },
-      children: "About Us"
-    }), /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-      className: "card",
-      children: /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-        className: "text-lg",
-        children: "Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience."
-      })
-    })]
-  });
-  const ContactPage = () => /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-    className: "content text-center",
-    children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("h2", {
-      className: "text-3xl font-bold mb-6",
-      style: {
-        color: '#26A69A'
-      },
-      children: "Contact Us"
-    }), /*#__PURE__*/(0, _jsxRuntime.jsxs)("div", {
-      className: "card",
-      children: [/*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-        className: "text-lg mb-2",
-        children: "Email: juliesfuelstop@gmail.com"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-        className: "text-lg mb-2",
-        children: "Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914"
-      }), /*#__PURE__*/(0, _jsxRuntime.jsx)("p", {
-        className: "text-lg",
-        children: "Phone: (865) 337-7493"
-      })]
-    })]
-  });
+  const ReviewsPage = () => /*#__PURE__*/React.createElement("div", {
+    className: "content"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-3xl font-bold mb-6 text-center",
+    style: {
+      color: '#26A69A'
+    }
+  }, "Reviews"), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-1 md:grid-cols-2 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "italic"
+  }, "\"Best turkey sandwich in town!\""), /*#__PURE__*/React.createElement("p", {
+    className: "text-right font-semibold mt-2"
+  }, "- Sarah M.")), /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "italic"
+  }, "\"Great fuel stop experience!\""), /*#__PURE__*/React.createElement("p", {
+    className: "text-right font-semibold mt-2"
+  }, "- John D."))));
+  const AboutPage = () => /*#__PURE__*/React.createElement("div", {
+    className: "content"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-3xl font-bold mb-6 text-center",
+    style: {
+      color: '#26A69A'
+    }
+  }, "About Us"), /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-lg"
+  }, "Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience.")));
+  const ContactPage = () => /*#__PURE__*/React.createElement("div", {
+    className: "content text-center"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-3xl font-bold mb-6",
+    style: {
+      color: '#26A69A'
+    }
+  }, "Contact Us"), /*#__PURE__*/React.createElement("div", {
+    className: "card"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-lg mb-2"
+  }, "Email: juliesfuelstop@gmail.com"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg mb-2"
+  }, "Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914"), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg"
+  }, "Phone: (865) 337-7493")));
   const App = () => {
     const [cartItems, setCartItems] = useState([]);
     const [tipAmount, setTipAmount] = useState(0);
@@ -453,52 +366,45 @@
         }
       }
     };
-    if (!routerReady) return /*#__PURE__*/(0, _jsxRuntime.jsx)("div", {
-      className: "loading",
-      children: "Loading..."
-    });
-    return /*#__PURE__*/(0, _jsxRuntime.jsx)(ErrorBoundary, {
-      children: /*#__PURE__*/(0, _jsxRuntime.jsxs)(BrowserRouter, {
-        children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(Navbar, {}), /*#__PURE__*/(0, _jsxRuntime.jsxs)(Switch, {
-          children: [/*#__PURE__*/(0, _jsxRuntime.jsx)(Route, {
-            exact: true,
-            path: "/",
-            component: HomePage
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Route, {
-            path: "/menu",
-            component: () => /*#__PURE__*/(0, _jsxRuntime.jsx)(MenuPage, {
-              addToCart: addToCart,
-              removeFromCart: removeFromCart,
-              cartItems: cartItems
-            })
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Route, {
-            path: "/promotions",
-            component: PromotionsPage
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Route, {
-            path: "/cart",
-            component: () => /*#__PURE__*/(0, _jsxRuntime.jsx)(CartPage, {
-              cartItems: cartItems,
-              removeFromCart: removeFromCart,
-              taxRate: 0.0925,
-              tipAmount: tipAmount,
-              setTipAmount: setTipAmount,
-              onPay: handlePayment
-            })
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Route, {
-            path: "/reviews",
-            component: ReviewsPage
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Route, {
-            path: "/about",
-            component: AboutPage
-          }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Route, {
-            path: "/contact",
-            component: ContactPage
-          })]
-        }), /*#__PURE__*/(0, _jsxRuntime.jsx)(Footer, {})]
+    if (!routerReady) return /*#__PURE__*/React.createElement("div", {
+      className: "loading"
+    }, "Loading...");
+    return /*#__PURE__*/React.createElement(ErrorBoundary, null, /*#__PURE__*/React.createElement(BrowserRouter, null, /*#__PURE__*/React.createElement(Navbar, null), /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
+      exact: true,
+      path: "/",
+      component: HomePage
+    }), /*#__PURE__*/React.createElement(Route, {
+      path: "/menu",
+      component: () => /*#__PURE__*/React.createElement(MenuPage, {
+        addToCart: addToCart,
+        removeFromCart: removeFromCart,
+        cartItems: cartItems
       })
-    });
+    }), /*#__PURE__*/React.createElement(Route, {
+      path: "/promotions",
+      component: PromotionsPage
+    }), /*#__PURE__*/React.createElement(Route, {
+      path: "/cart",
+      component: () => /*#__PURE__*/React.createElement(CartPage, {
+        cartItems: cartItems,
+        removeFromCart: removeFromCart,
+        taxRate: 0.0925,
+        tipAmount: tipAmount,
+        setTipAmount: setTipAmount,
+        onPay: handlePayment
+      })
+    }), /*#__PURE__*/React.createElement(Route, {
+      path: "/reviews",
+      component: ReviewsPage
+    }), /*#__PURE__*/React.createElement(Route, {
+      path: "/about",
+      component: AboutPage
+    }), /*#__PURE__*/React.createElement(Route, {
+      path: "/contact",
+      component: ContactPage
+    })), /*#__PURE__*/React.createElement(Footer, null)));
   };
   const rootElement = document.getElementById('root');
   const root = createRoot(rootElement);
-  root.render(/*#__PURE__*/(0, _jsxRuntime.jsx)(App, {}));
+  root.render(/*#__PURE__*/React.createElement(App, null));
 });
