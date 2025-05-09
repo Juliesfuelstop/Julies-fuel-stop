@@ -213,7 +213,7 @@ const Navbar = ({ cartItems }) => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = './images/logo.png';
+    img.src = '/images/logo.png';
     img.onload = () => setLogoError(false);
     img.onerror = () => {
       setLogoError(true);
@@ -227,7 +227,7 @@ const Navbar = ({ cartItems }) => {
         logoError ? (
           React.createElement("span", null, "Logo not found (Check /images/logo.png)")
         ) : (
-          React.createElement("img", { src: "./images/logo.png", alt: "Julie's Fuel Stop Logo", className: "logo-img", onError: () => {
+          React.createElement("img", { src: "/images/logo.png", alt: "Julie's Fuel Stop Logo", className: "logo-img", onError: () => {
             setLogoError(true);
             console.error("Logo load error during render");
           } })
