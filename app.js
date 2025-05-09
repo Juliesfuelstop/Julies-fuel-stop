@@ -209,29 +209,10 @@ const Cart = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onP
 };
 
 const Navbar = ({ cartItems }) => {
-  const [logoError, setLogoError] = useState(false);
-
-  useEffect(() => {
-    const img = new Image();
-    img.src = '/images/logo.png';
-    img.onload = () => setLogoError(false);
-    img.onerror = () => {
-      setLogoError(true);
-      console.error("Logo load failed: Check /images/logo.png on server");
-    };
-  }, []);
-
   return (
     React.createElement("nav", { className: "navbar" },
       React.createElement("div", { className: "logo" },
-        logoError ? (
-          React.createElement("span", null, "Logo not found (Check /images/logo.png)")
-        ) : (
-          React.createElement("img", { src: "/images/logo.png", alt: "Julie's Fuel Stop Logo", className: "logo-img", onError: () => {
-            setLogoError(true);
-            console.error("Logo load error during render");
-          } })
-        )
+        React.createElement("img", { src: "https://via.placeholder.com/150", alt: "Julie's Fuel Stop Logo", className: "logo-img" })
       ),
       React.createElement("div", null,
         React.createElement(Link, { to: "/" }, "Home"),
