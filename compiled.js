@@ -35,7 +35,7 @@ class ErrorBoundary extends React.Component {
   }
   render() {
     if (this.state.hasError) {
-      return /*#__PURE__*/React.createElement("h2", {
+      return React.createElement("h2", {
         className: "text-red-500 text-center p-4"
       }, "Something went wrong: ", this.state.error.message);
     }
@@ -451,23 +451,23 @@ const MenuItem = _ref => {
     onRemoveFromCart,
     isInCart
   } = _ref;
-  return /*#__PURE__*/React.createElement("div", {
+  return React.createElement("div", {
     className: "card flex items-center"
-  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h3", {
+  }, React.createElement("div", null, React.createElement("h3", {
     className: "text-xl font-semibold",
     style: {
       color: '#87CEEB'
     }
-  }, item.name), /*#__PURE__*/React.createElement("p", {
+  }, item.name), React.createElement("p", {
     className: "text-gray-600"
-  }, "$", item.price.toFixed(2)), /*#__PURE__*/React.createElement("label", {
+  }, "$", item.price.toFixed(2)), React.createElement("label", {
     className: "flex items-center mt-2"
-  }, /*#__PURE__*/React.createElement("input", {
+  }, React.createElement("input", {
     type: "checkbox",
     className: "mr-2",
     checked: isInCart,
     onChange: () => isInCart ? onRemoveFromCart(item.name) : onAddToCart(item)
-  }), /*#__PURE__*/React.createElement("span", null, "Add to Cart"))));
+  }), React.createElement("span", null, "Add to Cart"))));
 };
 const Cart = _ref2 => {
   let {
@@ -481,39 +481,39 @@ const Cart = _ref2 => {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
   const tax = subtotal * taxRate;
   const total = subtotal + tax + tipAmount;
-  return /*#__PURE__*/React.createElement("div", {
+  return React.createElement("div", {
     className: "card"
-  }, /*#__PURE__*/React.createElement("h2", {
+  }, React.createElement("h2", {
     className: "text-3xl font-bold mb-6 text-center",
     style: {
       color: '#87CEEB'
     }
-  }, "Cart"), /*#__PURE__*/React.createElement("div", {
+  }, "Cart"), React.createElement("div", {
     className: "mb-4"
-  }, cartItems.length ? cartItems.map(item => /*#__PURE__*/React.createElement("p", {
+  }, cartItems.length ? cartItems.map(item => React.createElement("p", {
     className: "flex justify-between",
     key: item.id
-  }, /*#__PURE__*/React.createElement("span", null, item.name, ": $", item.price.toFixed(2)), /*#__PURE__*/React.createElement("button", {
+  }, React.createElement("span", null, item.name, ": $", item.price.toFixed(2)), React.createElement("button", {
     className: "text-red-500",
     onClick: () => removeFromCart(item.id)
-  }, "Remove"))) : /*#__PURE__*/React.createElement("p", null, "No items in cart.")), /*#__PURE__*/React.createElement("div", {
+  }, "Remove"))) : React.createElement("p", null, "No items in cart.")), React.createElement("div", {
     className: "border-t pt-4"
-  }, /*#__PURE__*/React.createElement("p", {
+  }, React.createElement("p", {
     className: "flex justify-between"
-  }, /*#__PURE__*/React.createElement("span", null, "Subtotal:"), " ", /*#__PURE__*/React.createElement("span", null, "$", subtotal.toFixed(2))), /*#__PURE__*/React.createElement("p", {
+  }, React.createElement("span", null, "Subtotal:"), React.createElement("span", null, "$", subtotal.toFixed(2))), React.createElement("p", {
     className: "flex justify-between"
-  }, /*#__PURE__*/React.createElement("span", null, "Tax (9.25%):"), " ", /*#__PURE__*/React.createElement("span", null, "$", tax.toFixed(2))), /*#__PURE__*/React.createElement("div", {
+  }, React.createElement("span", null, "Tax (9.25%):"), React.createElement("span", null, "$", tax.toFixed(2))), React.createElement("div", {
     className: "flex justify-between items-center mb-4"
-  }, /*#__PURE__*/React.createElement("span", null, "Tip:"), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("button", {
+  }, React.createElement("span", null, "Tip:"), React.createElement("div", null, React.createElement("button", {
     className: "button mr-2",
     onClick: () => setTipAmount(subtotal * 0.05)
-  }, "5%"), /*#__PURE__*/React.createElement("button", {
+  }, "5%"), React.createElement("button", {
     className: "button mr-2",
     onClick: () => setTipAmount(subtotal * 0.10)
-  }, "10%"), /*#__PURE__*/React.createElement("button", {
+  }, "10%"), React.createElement("button", {
     className: "button mr-2",
     onClick: () => setTipAmount(subtotal * 0.15)
-  }, "15%"), /*#__PURE__*/React.createElement("input", {
+  }, "15%"), React.createElement("input", {
     type: "number",
     placeholder: "Custom $",
     className: "border rounded px-2 py-1",
@@ -521,22 +521,22 @@ const Cart = _ref2 => {
     step: "0.01",
     value: tipAmount || '',
     onChange: e => setTipAmount(parseFloat(e.target.value) || 0)
-  }))), /*#__PURE__*/React.createElement("p", {
+  }))), React.createElement("p", {
     className: "flex justify-between font-bold"
-  }, /*#__PURE__*/React.createElement("span", null, "Total:"), " ", /*#__PURE__*/React.createElement("span", null, "$", total.toFixed(2)))), /*#__PURE__*/React.createElement("div", {
+  }, React.createElement("span", null, "Total:"), React.createElement("span", null, "$", total.toFixed(2)))), React.createElement("div", {
     className: "mt-6"
-  }, /*#__PURE__*/React.createElement("h3", {
+  }, React.createElement("h3", {
     className: "text-xl font-semibold mb-4",
     style: {
       color: '#87CEEB'
     }
-  }, "Payment"), /*#__PURE__*/React.createElement("div", {
+  }, "Payment"), React.createElement("div", {
     id: "card-element",
     className: "border rounded p-4 mb-4"
-  }), /*#__PURE__*/React.createElement("div", {
+  }), React.createElement("div", {
     id: "card-errors",
     className: "text-red-500 mb-4"
-  }), /*#__PURE__*/React.createElement("button", {
+  }), React.createElement("button", {
     className: "button",
     onClick: () => onPay(total)
   }, "Pay Now")));
@@ -548,68 +548,68 @@ const Navbar = _ref3 => {
   const [logoError, setLogoError] = useState(false);
   useEffect(() => {
     const img = new Image();
-    img.src = '/images/logo.png'; // Updated path
+    img.src = './images/logo.png';
     img.onload = () => setLogoError(false);
     img.onerror = () => {
       setLogoError(true);
       console.error("Logo load failed: Check /images/logo.png on server");
     };
   }, []);
-  return /*#__PURE__*/React.createElement("nav", {
+  return React.createElement("nav", {
     className: "navbar"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, React.createElement("div", {
     className: "logo"
-  }, logoError ? /*#__PURE__*/React.createElement("span", null, "Logo not found (Check /images/logo.png)") : /*#__PURE__*/React.createElement("img", {
-    src: "/images/logo.png",
+  }, logoError ? React.createElement("span", null, "Logo not found (Check /images/logo.png)") : React.createElement("img", {
+    src: "./images/logo.png",
     alt: "Julie's Fuel Stop Logo",
     className: "logo-img",
     onError: () => {
       setLogoError(true);
       console.error("Logo load error during render");
     }
-  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Link, {
+  })), React.createElement("div", null, React.createElement(Link, {
     to: "/"
-  }, "Home"), /*#__PURE__*/React.createElement(Link, {
+  }, "Home"), React.createElement(Link, {
     to: "/menu"
-  }, "Menu"), /*#__PURE__*/React.createElement(Link, {
+  }, "Menu"), React.createElement(Link, {
     to: "/promotions"
-  }, "Promotions"), /*#__PURE__*/React.createElement(Link, {
+  }, "Promotions"), React.createElement(Link, {
     to: "/cart"
-  }, "Cart ", /*#__PURE__*/React.createElement("span", {
+  }, "Cart ", React.createElement("span", {
     className: "badge"
-  }, cartItems.length)), /*#__PURE__*/React.createElement(Link, {
+  }, cartItems.length)), React.createElement(Link, {
     to: "/reviews"
-  }, "Reviews"), /*#__PURE__*/React.createElement(Link, {
+  }, "Reviews"), React.createElement(Link, {
     to: "/about"
-  }, "About"), /*#__PURE__*/React.createElement(Link, {
+  }, "About"), React.createElement(Link, {
     to: "/contact"
   }, "Contact")));
 };
-const Footer = () => /*#__PURE__*/React.createElement("footer", {
+const Footer = () => React.createElement("footer", {
   className: "bg-skyblue text-white p-4 text-center"
-}, /*#__PURE__*/React.createElement("p", null, "\xA9 2025 Julie's Fuel Stop. All rights reserved."));
-const HomePage = () => /*#__PURE__*/React.createElement("div", {
+}, React.createElement("p", null, "© 2025 Julie's Fuel Stop. All rights reserved."));
+const HomePage = () => React.createElement("div", {
   className: "content text-center"
-}, /*#__PURE__*/React.createElement("h2", {
+}, React.createElement("h2", {
   className: "text-4xl font-bold mb-4",
   style: {
     color: '#87CEEB'
   }
-}, "Welcome to Julie's Fuel Stop"), /*#__PURE__*/React.createElement("p", {
+}, "Welcome to Julie's Fuel Stop"), React.createElement("p", {
   className: "text-lg mb-6"
-}, "Your one-stop shop for delicious deli food and fuel services!"), /*#__PURE__*/React.createElement("button", {
+}, "Your one-stop shop for delicious deli food and fuel services!"), React.createElement("button", {
   className: "button"
 }, "Explore Menu"));
-const PromotionsPage = () => /*#__PURE__*/React.createElement("div", {
+const PromotionsPage = () => React.createElement("div", {
   className: "content"
-}, /*#__PURE__*/React.createElement("h2", {
+}, React.createElement("h2", {
   className: "text-3xl font-bold mb-6 text-center",
   style: {
     color: '#87CEEB'
   }
-}, "Promotions"), /*#__PURE__*/React.createElement("div", {
+}, "Promotions"), React.createElement("div", {
   className: "card"
-}, promotions.map((promo, index) => /*#__PURE__*/React.createElement("p", {
+}, promotions.map((promo, index) => React.createElement("p", {
   className: "text-lg text-center",
   key: index
 }, promo))));
@@ -624,30 +624,30 @@ const MenuPage = _ref4 => {
     console.log("MenuPage mounted - Items Count:", menuItems.length);
     console.log("Menu Items:", menuItems);
   }, []);
-  return /*#__PURE__*/React.createElement("div", {
+  return React.createElement("div", {
     className: "content"
-  }, /*#__PURE__*/React.createElement("h2", {
+  }, React.createElement("h2", {
     className: "text-3xl font-bold mb-6 text-center",
     style: {
       color: '#87CEEB'
     }
-  }, "Menu"), categories.map(category => /*#__PURE__*/React.createElement("div", {
+  }, "Menu"), categories.map(category => React.createElement("div", {
     key: category,
     className: "mb-6"
-  }, /*#__PURE__*/React.createElement("h3", {
+  }, React.createElement("h3", {
     className: "text-2xl font-semibold mb-4",
     style: {
       color: '#87CEEB'
     }
-  }, category), /*#__PURE__*/React.createElement("div", {
+  }, category), React.createElement("div", {
     className: "grid grid-cols-1 md:grid-cols-3 gap-6"
-  }, menuItems.filter(item => item.category === category).map((item, index) => /*#__PURE__*/React.createElement(MenuItem, {
+  }, menuItems.filter(item => item.category === category).map((item, index) => React.createElement(MenuItem, {
     key: "".concat(item.name, "-").concat(index),
     item: item,
     onAddToCart: addToCart,
     onRemoveFromCart: removeFromCart,
     isInCart: cartItems.some(cartItem => cartItem.name === item.name)
-  }))))), menuItems.length === 0 && /*#__PURE__*/React.createElement("p", null, "No menu items available."));
+  }))))), menuItems.length === 0 && React.createElement("p", null, "No menu items available."));
 };
 const CartPage = _ref5 => {
   let {
@@ -658,9 +658,9 @@ const CartPage = _ref5 => {
     setTipAmount,
     onPay
   } = _ref5;
-  return /*#__PURE__*/React.createElement("div", {
+  return React.createElement("div", {
     className: "content"
-  }, /*#__PURE__*/React.createElement(Cart, {
+  }, React.createElement(Cart, {
     cartItems: cartItems,
     removeFromCart: removeFromCart,
     taxRate: taxRate,
@@ -693,32 +693,32 @@ const ReviewsPage = () => {
       });
     }
   };
-  return /*#__PURE__*/React.createElement("div", {
+  return React.createElement("div", {
     className: "content"
-  }, /*#__PURE__*/React.createElement("h2", {
+  }, React.createElement("h2", {
     className: "text-3xl font-bold mb-6 text-center",
     style: {
       color: '#87CEEB'
     }
-  }, "Reviews"), /*#__PURE__*/React.createElement("div", {
+  }, "Reviews"), React.createElement("div", {
     className: "grid grid-cols-1 md:grid-cols-2 gap-6"
-  }, reviews.map((review, index) => /*#__PURE__*/React.createElement("div", {
+  }, reviews.map((review, index) => React.createElement("div", {
     className: "card",
     key: index
-  }, /*#__PURE__*/React.createElement("p", {
+  }, React.createElement("p", {
     className: "italic"
-  }, review.text), /*#__PURE__*/React.createElement("p", {
+  }, review.text), React.createElement("p", {
     className: "text-right font-semibold mt-2"
-  }, review.author)))), /*#__PURE__*/React.createElement("div", {
+  }, review.author)))), React.createElement("div", {
     className: "card mt-6"
-  }, /*#__PURE__*/React.createElement("h3", {
+  }, React.createElement("h3", {
     className: "text-xl font-semibold mb-4",
     style: {
       color: '#87CEEB'
     }
-  }, "Add a Review"), /*#__PURE__*/React.createElement("form", {
+  }, "Add a Review"), React.createElement("form", {
     onSubmit: handleSubmit
-  }, /*#__PURE__*/React.createElement("textarea", {
+  }, React.createElement("textarea", {
     className: "border rounded w-full p-2 mb-2",
     value: newReview.text,
     onChange: e => setNewReview(_objectSpread(_objectSpread({}, newReview), {}, {
@@ -726,44 +726,44 @@ const ReviewsPage = () => {
     })),
     placeholder: "Write your review",
     rows: "3"
-  }), /*#__PURE__*/React.createElement("input", {
+  }), React.createElement("input", {
     className: "border rounded p-2 mb-2 w-full",
     value: newReview.author,
     onChange: e => setNewReview(_objectSpread(_objectSpread({}, newReview), {}, {
       author: e.target.value
     })),
     placeholder: "Your name"
-  }), /*#__PURE__*/React.createElement("button", {
+  }), React.createElement("button", {
     type: "submit",
     className: "button"
   }, "Submit"))));
 };
-const AboutPage = () => /*#__PURE__*/React.createElement("div", {
+const AboutPage = () => React.createElement("div", {
   className: "content"
-}, /*#__PURE__*/React.createElement("h2", {
+}, React.createElement("h2", {
   className: "text-3xl font-bold mb-6 text-center",
   style: {
     color: '#87CEEB'
   }
-}, "About Us"), /*#__PURE__*/React.createElement("div", {
+}, "About Us"), React.createElement("div", {
   className: "card"
-}, /*#__PURE__*/React.createElement("p", {
+}, React.createElement("p", {
   className: "text-lg"
 }, "Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience.")));
-const ContactPage = () => /*#__PURE__*/React.createElement("div", {
+const ContactPage = () => React.createElement("div", {
   className: "content text-center"
-}, /*#__PURE__*/React.createElement("h2", {
+}, React.createElement("h2", {
   className: "text-3xl font-bold mb-6",
   style: {
     color: '#87CEEB'
   }
-}, "Contact Us"), /*#__PURE__*/React.createElement("div", {
+}, "Contact Us"), React.createElement("div", {
   className: "card"
-}, /*#__PURE__*/React.createElement("p", {
+}, React.createElement("p", {
   className: "text-lg mb-2"
-}, "Email: juliesfuelstop@gmail.com"), /*#__PURE__*/React.createElement("p", {
+}, "Email: juliesfuelstop@gmail.com"), React.createElement("p", {
   className: "text-lg mb-2"
-}, "Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914"), /*#__PURE__*/React.createElement("p", {
+}, "Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914"), React.createElement("p", {
   className: "text-lg"
 }, "Phone: (865) 337-7493")));
 const App = () => {
@@ -828,28 +828,28 @@ const App = () => {
       }
     }
   };
-  if (!routerReady) return /*#__PURE__*/React.createElement("div", {
+  if (!routerReady) return React.createElement("div", {
     className: "loading"
   }, "Loading...");
-  return /*#__PURE__*/React.createElement(ErrorBoundary, null, /*#__PURE__*/React.createElement(BrowserRouter, null, /*#__PURE__*/React.createElement(Navbar, {
+  return React.createElement(ErrorBoundary, null, React.createElement(BrowserRouter, null, React.createElement(Navbar, {
     cartItems: cartItems
-  }), /*#__PURE__*/React.createElement(Switch, null, /*#__PURE__*/React.createElement(Route, {
+  }), React.createElement(Switch, null, React.createElement(Route, {
     exact: true,
     path: "/",
     component: HomePage
-  }), /*#__PURE__*/React.createElement(Route, {
+  }), React.createElement(Route, {
     path: "/menu",
-    component: () => /*#__PURE__*/React.createElement(MenuPage, {
+    component: () => React.createElement(MenuPage, {
       addToCart: addToCart,
       removeFromCart: removeFromCart,
       cartItems: cartItems
     })
-  }), /*#__PURE__*/React.createElement(Route, {
+  }), React.createElement(Route, {
     path: "/promotions",
     component: PromotionsPage
-  }), /*#__PURE__*/React.createElement(Route, {
+  }), React.createElement(Route, {
     path: "/cart",
-    component: () => /*#__PURE__*/React.createElement(CartPage, {
+    component: () => React.createElement(CartPage, {
       cartItems: cartItems,
       removeFromCart: removeFromCart,
       taxRate: 0.0925,
@@ -857,17 +857,17 @@ const App = () => {
       setTipAmount: setTipAmount,
       onPay: handlePayment
     })
-  }), /*#__PURE__*/React.createElement(Route, {
+  }), React.createElement(Route, {
     path: "/reviews",
     component: ReviewsPage
-  }), /*#__PURE__*/React.createElement(Route, {
+  }), React.createElement(Route, {
     path: "/about",
     component: AboutPage
-  }), /*#__PURE__*/React.createElement(Route, {
+  }), React.createElement(Route, {
     path: "/contact",
     component: ContactPage
-  })), /*#__PURE__*/React.createElement(Footer, null)));
+  })), React.createElement(Footer, null)));
 };
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
-root.render(/*#__PURE__*/React.createElement(App, null));
+root.render(React.createElement(App));

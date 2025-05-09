@@ -11,7 +11,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      return <h2 className="text-red-500 text-center p-4">Something went wrong: {this.state.error.message}</h2>;
+      return React.createElement("h2", { className: "text-red-500 text-center p-4" }, "Something went wrong: ", this.state.error.message);
     }
     return this.props.children;
   }
@@ -128,21 +128,21 @@ const menuItems = [
 const promotions = ["10% off on all sandwiches this week!", "Free Drink with any Special purchase!"];
 
 const MenuItem = ({ item, onAddToCart, onRemoveFromCart, isInCart }) => (
-  <div className="card flex items-center">
-    <div>
-      <h3 className="text-xl font-semibold" style={{ color: '#87CEEB' }}>{item.name}</h3>
-      <p className="text-gray-600">${item.price.toFixed(2)}</p>
-      <label className="flex items-center mt-2">
-        <input
-          type="checkbox"
-          className="mr-2"
-          checked={isInCart}
-          onChange={() => (isInCart ? onRemoveFromCart(item.name) : onAddToCart(item))}
-        />
-        <span>Add to Cart</span>
-      </label>
-    </div>
-  </div>
+  React.createElement("div", { className: "card flex items-center" },
+    React.createElement("div", null,
+      React.createElement("h3", { className: "text-xl font-semibold", style: { color: '#87CEEB' } }, item.name),
+      React.createElement("p", { className: "text-gray-600" }, "$", item.price.toFixed(2)),
+      React.createElement("label", { className: "flex items-center mt-2" },
+        React.createElement("input", {
+          type: "checkbox",
+          className: "mr-2",
+          checked: isInCart,
+          onChange: () => (isInCart ? onRemoveFromCart(item.name) : onAddToCart(item))
+        }),
+        React.createElement("span", null, "Add to Cart")
+      )
+    )
+  )
 );
 
 const Cart = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onPay }) => {
@@ -151,71 +151,60 @@ const Cart = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onP
   const total = subtotal + tax + tipAmount;
 
   return (
-    <div className="card">
-      <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
-        Cart
-      </h2>
-      <div className="mb-4">
-        {cartItems.length ? (
-          cartItems.map((item) => (
-            <p className="flex justify-between" key={item.id}>
-              <span>
-                {item.name}: ${item.price.toFixed(2)}
-              </span>
-              <button className="text-red-500" onClick={() => removeFromCart(item.id)}>
-                Remove
-              </button>
-            </p>
-          ))
+    React.createElement("div", { className: "card" },
+      React.createElement("h2", { className: "text-3xl font-bold mb-6 text-center", style: { color: '#87CEEB' } }, "Cart"),
+      React.createElement("div", { className: "mb-4" },
+        cartItems.length ? (
+          cartItems.map((item) =>
+            React.createElement("p", { className: "flex justify-between", key: item.id },
+              React.createElement("span", null,
+                item.name, ": $", item.price.toFixed(2)
+              ),
+              React.createElement("button", { className: "text-red-500", onClick: () => removeFromCart(item.id) }, "Remove")
+            )
+          )
         ) : (
-          <p>No items in cart.</p>
-        )}
-      </div>
-      <div className="border-t pt-4">
-        <p className="flex justify-between">
-          <span>Subtotal:</span> <span>${subtotal.toFixed(2)}</span>
-        </p>
-        <p className="flex justify-between">
-          <span>Tax (9.25%):</span> <span>${tax.toFixed(2)}</span>
-        </p>
-        <div className="flex justify-between items-center mb-4">
-          <span>Tip:</span>
-          <div>
-            <button className="button mr-2" onClick={() => setTipAmount(subtotal * 0.05)}>
-              5%
-            </button>
-            <button className="button mr-2" onClick={() => setTipAmount(subtotal * 0.10)}>
-              10%
-            </button>
-            <button className="button mr-2" onClick={() => setTipAmount(subtotal * 0.15)}>
-              15%
-            </button>
-            <input
-              type="number"
-              placeholder="Custom $"
-              className="border rounded px-2 py-1"
-              min="0"
-              step="0.01"
-              value={tipAmount || ''}
-              onChange={(e) => setTipAmount(parseFloat(e.target.value) || 0)}
-            />
-          </div>
-        </div>
-        <p className="flex justify-between font-bold">
-          <span>Total:</span> <span>${total.toFixed(2)}</span>
-        </p>
-      </div>
-      <div className="mt-6">
-        <h3 className="text-xl font-semibold mb-4" style={{ color: '#87CEEB' }}>
-          Payment
-        </h3>
-        <div id="card-element" className="border rounded p-4 mb-4"></div>
-        <div id="card-errors" className="text-red-500 mb-4"></div>
-        <button className="button" onClick={() => onPay(total)}>
-          Pay Now
-        </button>
-      </div>
-    </div>
+          React.createElement("p", null, "No items in cart.")
+        )
+      ),
+      React.createElement("div", { className: "border-t pt-4" },
+        React.createElement("p", { className: "flex justify-between" },
+          React.createElement("span", null, "Subtotal:"),
+          React.createElement("span", null, "$", subtotal.toFixed(2))
+        ),
+        React.createElement("p", { className: "flex justify-between" },
+          React.createElement("span", null, "Tax (9.25%):"),
+          React.createElement("span", null, "$", tax.toFixed(2))
+        ),
+        React.createElement("div", { className: "flex justify-between items-center mb-4" },
+          React.createElement("span", null, "Tip:"),
+          React.createElement("div", null,
+            React.createElement("button", { className: "button mr-2", onClick: () => setTipAmount(subtotal * 0.05) }, "5%"),
+            React.createElement("button", { className: "button mr-2", onClick: () => setTipAmount(subtotal * 0.10) }, "10%"),
+            React.createElement("button", { className: "button mr-2", onClick: () => setTipAmount(subtotal * 0.15) }, "15%"),
+            React.createElement("input", {
+              type: "number",
+              placeholder: "Custom $",
+              className: "border rounded px-2 py-1",
+              min: "0",
+              step: "0.01",
+              value: tipAmount || '',
+              onChange: (e) => setTipAmount(parseFloat(e.target.value) || 0)
+            })
+          )
+        ),
+        React.createElement("p", { className: "flex justify-between font-bold" },
+          React.createElement("span", null, "Total:"),
+          React.createElement("span", null, "$", total.toFixed(2))
+        )
+      ),
+      React.createElement("div", { className: "mt-6" },
+        React.createElement("h3", { className: "text-xl font-semibold mb-4", style: { color: '#87CEEB' } }, "Payment"),
+        React.createElement("div", { id: "card-element", className: "border rounded p-4 mb-4" }),
+        React.createElement("div", { id: "card-errors", className: "text-red-500 mb-4" }),
+        React.createElement("button", { className: "button", onClick: () => onPay(total) }, "Pay Now")
+      )
+    )
   );
 };
 
@@ -224,7 +213,7 @@ const Navbar = ({ cartItems }) => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = '/images/logo.png'; // Updated path
+    img.src = './images/logo.png';
     img.onload = () => setLogoError(false);
     img.onerror = () => {
       setLogoError(true);
@@ -233,61 +222,56 @@ const Navbar = ({ cartItems }) => {
   }, []);
 
   return (
-    <nav className="navbar">
-      <div className="logo">
-        {logoError ? (
-          <span>Logo not found (Check /images/logo.png)</span>
+    React.createElement("nav", { className: "navbar" },
+      React.createElement("div", { className: "logo" },
+        logoError ? (
+          React.createElement("span", null, "Logo not found (Check /images/logo.png)")
         ) : (
-          <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="logo-img" onError={() => {
+          React.createElement("img", { src: "./images/logo.png", alt: "Julie's Fuel Stop Logo", className: "logo-img", onError: () => {
             setLogoError(true);
             console.error("Logo load error during render");
-          }} />
-        )}
-      </div>
-      <div>
-        <Link to="/">Home</Link>
-        <Link to="/menu">Menu</Link>
-        <Link to="/promotions">Promotions</Link>
-        <Link to="/cart">
-          Cart <span className="badge">{cartItems.length}</span>
-        </Link>
-        <Link to="/reviews">Reviews</Link>
-        <Link to="/about">About</Link>
-        <Link to="/contact">Contact</Link>
-      </div>
-    </nav>
+          } })
+        )
+      ),
+      React.createElement("div", null,
+        React.createElement(Link, { to: "/" }, "Home"),
+        React.createElement(Link, { to: "/menu" }, "Menu"),
+        React.createElement(Link, { to: "/promotions" }, "Promotions"),
+        React.createElement(Link, { to: "/cart" },
+          "Cart ",
+          React.createElement("span", { className: "badge" }, cartItems.length)
+        ),
+        React.createElement(Link, { to: "/reviews" }, "Reviews"),
+        React.createElement(Link, { to: "/about" }, "About"),
+        React.createElement(Link, { to: "/contact" }, "Contact")
+      )
+    )
   );
 };
 
 const Footer = () => (
-  <footer className="bg-skyblue text-white p-4 text-center">
-    <p>© 2025 Julie's Fuel Stop. All rights reserved.</p>
-  </footer>
+  React.createElement("footer", { className: "bg-skyblue text-white p-4 text-center" },
+    React.createElement("p", null, "© 2025 Julie's Fuel Stop. All rights reserved.")
+  )
 );
 
 const HomePage = () => (
-  <div className="content text-center">
-    <h2 className="text-4xl font-bold mb-4" style={{ color: '#87CEEB' }}>
-      Welcome to Julie's Fuel Stop
-    </h2>
-    <p className="text-lg mb-6">Your one-stop shop for delicious deli food and fuel services!</p>
-    <button className="button">Explore Menu</button>
-  </div>
+  React.createElement("div", { className: "content text-center" },
+    React.createElement("h2", { className: "text-4xl font-bold mb-4", style: { color: '#87CEEB' } }, "Welcome to Julie's Fuel Stop"),
+    React.createElement("p", { className: "text-lg mb-6" }, "Your one-stop shop for delicious deli food and fuel services!"),
+    React.createElement("button", { className: "button" }, "Explore Menu")
+  )
 );
 
 const PromotionsPage = () => (
-  <div className="content">
-    <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
-      Promotions
-    </h2>
-    <div className="card">
-      {promotions.map((promo, index) => (
-        <p className="text-lg text-center" key={index}>
-          {promo}
-        </p>
-      ))}
-    </div>
-  </div>
+  React.createElement("div", { className: "content" },
+    React.createElement("h2", { className: "text-3xl font-bold mb-6 text-center", style: { color: '#87CEEB' } }, "Promotions"),
+    React.createElement("div", { className: "card" },
+      promotions.map((promo, index) =>
+        React.createElement("p", { className: "text-lg text-center", key: index }, promo)
+      )
+    )
+  )
 );
 
 const MenuPage = ({ addToCart, removeFromCart, cartItems }) => {
@@ -297,42 +281,40 @@ const MenuPage = ({ addToCart, removeFromCart, cartItems }) => {
     console.log("Menu Items:", menuItems);
   }, []);
   return (
-    <div className="content">
-      <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
-        Menu
-      </h2>
-      {categories.map(category => (
-        <div key={category} className="mb-6">
-          <h3 className="text-2xl font-semibold mb-4" style={{ color: '#87CEEB' }}>{category}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {menuItems.filter(item => item.category === category).map((item, index) => (
-              <MenuItem
-                key={`${item.name}-${index}`}
-                item={item}
-                onAddToCart={addToCart}
-                onRemoveFromCart={removeFromCart}
-                isInCart={cartItems.some((cartItem) => cartItem.name === item.name)}
-              />
-            ))}
-          </div>
-        </div>
-      ))}
-      {menuItems.length === 0 && <p>No menu items available.</p>}
-    </div>
+    React.createElement("div", { className: "content" },
+      React.createElement("h2", { className: "text-3xl font-bold mb-6 text-center", style: { color: '#87CEEB' } }, "Menu"),
+      categories.map(category =>
+        React.createElement("div", { key: category, className: "mb-6" },
+          React.createElement("h3", { className: "text-2xl font-semibold mb-4", style: { color: '#87CEEB' } }, category),
+          React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-6" },
+            menuItems.filter(item => item.category === category).map((item, index) =>
+              React.createElement(MenuItem, {
+                key: `${item.name}-${index}`,
+                item: item,
+                onAddToCart: addToCart,
+                onRemoveFromCart: removeFromCart,
+                isInCart: cartItems.some((cartItem) => cartItem.name === item.name)
+              })
+            )
+          )
+        )
+      ),
+      menuItems.length === 0 && React.createElement("p", null, "No menu items available.")
+    )
   );
 };
 
 const CartPage = ({ cartItems, removeFromCart, taxRate, tipAmount, setTipAmount, onPay }) => (
-  <div className="content">
-    <Cart
-      cartItems={cartItems}
-      removeFromCart={removeFromCart}
-      taxRate={taxRate}
-      tipAmount={tipAmount}
-      setTipAmount={setTipAmount}
-      onPay={onPay}
-    />
-  </div>
+  React.createElement("div", { className: "content" },
+    React.createElement(Cart, {
+      cartItems: cartItems,
+      removeFromCart: removeFromCart,
+      taxRate: taxRate,
+      tipAmount: tipAmount,
+      setTipAmount: setTipAmount,
+      onPay: onPay
+    })
+  )
 );
 
 const ReviewsPage = () => {
@@ -351,65 +333,59 @@ const ReviewsPage = () => {
   };
 
   return (
-    <div className="content">
-      <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
-        Reviews
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {reviews.map((review, index) => (
-          <div className="card" key={index}>
-            <p className="italic">{review.text}</p>
-            <p className="text-right font-semibold mt-2">{review.author}</p>
-          </div>
-        ))}
-      </div>
-      <div className="card mt-6">
-        <h3 className="text-xl font-semibold mb-4" style={{ color: '#87CEEB' }}>Add a Review</h3>
-        <form onSubmit={handleSubmit}>
-          <textarea
-            className="border rounded w-full p-2 mb-2"
-            value={newReview.text}
-            onChange={(e) => setNewReview({ ...newReview, text: e.target.value })}
-            placeholder="Write your review"
-            rows="3"
-          />
-          <input
-            className="border rounded p-2 mb-2 w-full"
-            value={newReview.author}
-            onChange={(e) => setNewReview({ ...newReview, author: e.target.value })}
-            placeholder="Your name"
-          />
-          <button type="submit" className="button">Submit</button>
-        </form>
-      </div>
-    </div>
+    React.createElement("div", { className: "content" },
+      React.createElement("h2", { className: "text-3xl font-bold mb-6 text-center", style: { color: '#87CEEB' } }, "Reviews"),
+      React.createElement("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6" },
+        reviews.map((review, index) =>
+          React.createElement("div", { className: "card", key: index },
+            React.createElement("p", { className: "italic" }, review.text),
+            React.createElement("p", { className: "text-right font-semibold mt-2" }, review.author)
+          )
+        )
+      ),
+      React.createElement("div", { className: "card mt-6" },
+        React.createElement("h3", { className: "text-xl font-semibold mb-4", style: { color: '#87CEEB' } }, "Add a Review"),
+        React.createElement("form", { onSubmit: handleSubmit },
+          React.createElement("textarea", {
+            className: "border rounded w-full p-2 mb-2",
+            value: newReview.text,
+            onChange: (e) => setNewReview({ ...newReview, text: e.target.value }),
+            placeholder: "Write your review",
+            rows: "3"
+          }),
+          React.createElement("input", {
+            className: "border rounded p-2 mb-2 w-full",
+            value: newReview.author,
+            onChange: (e) => setNewReview({ ...newReview, author: e.target.value }),
+            placeholder: "Your name"
+          }),
+          React.createElement("button", { type: "submit", className: "button" }, "Submit")
+        )
+      )
+    )
   );
 };
 
 const AboutPage = () => (
-  <div className="content">
-    <h2 className="text-3xl font-bold mb-6 text-center" style={{ color: '#87CEEB' }}>
-      About Us
-    </h2>
-    <div className="card">
-      <p className="text-lg">
-        Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience.
-      </p>
-    </div>
-  </div>
+  React.createElement("div", { className: "content" },
+    React.createElement("h2", { className: "text-3xl font-bold mb-6 text-center", style: { color: '#87CEEB' } }, "About Us"),
+    React.createElement("div", { className: "card" },
+      React.createElement("p", { className: "text-lg" },
+        "Julie's Fuel Stop, located in Knoxville, TN, offers deli delights, fuel, and more with over 4 decades of experience."
+      )
+    )
+  )
 );
 
 const ContactPage = () => (
-  <div className="content text-center">
-    <h2 className="text-3xl font-bold mb-6" style={{ color: '#87CEEB' }}>
-      Contact Us
-    </h2>
-    <div className="card">
-      <p className="text-lg mb-2">Email: juliesfuelstop@gmail.com</p>
-      <p className="text-lg mb-2">Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914</p>
-      <p className="text-lg">Phone: (865) 337-7493</p>
-    </div>
-  </div>
+  React.createElement("div", { className: "content text-center" },
+    React.createElement("h2", { className: "text-3xl font-bold mb-6", style: { color: '#87CEEB' } }, "Contact Us"),
+    React.createElement("div", { className: "card" },
+      React.createElement("p", { className: "text-lg mb-2" }, "Email: juliesfuelstop@gmail.com"),
+      React.createElement("p", { className: "text-lg mb-2" }, "Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914"),
+      React.createElement("p", { className: "text-lg" }, "Phone: (865) 337-7493")
+    )
+  )
 );
 
 const App = () => {
@@ -478,42 +454,40 @@ const App = () => {
     }
   };
 
-  if (!routerReady) return <div className="loading">Loading...</div>;
+  if (!routerReady) return React.createElement("div", { className: "loading" }, "Loading...");
 
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Navbar cartItems={cartItems} />
-        <Switch>
-          <Route exact path="/" component={HomePage} />
-          <Route
-            path="/menu"
-            component={() => <MenuPage addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} />}
-          />
-          <Route path="/promotions" component={PromotionsPage} />
-          <Route
-            path="/cart"
-            component={() => (
-              <CartPage
-                cartItems={cartItems}
-                removeFromCart={removeFromCart}
-                taxRate={0.0925}
-                tipAmount={tipAmount}
-                setTipAmount={setTipAmount}
-                onPay={handlePayment}
-              />
-            )}
-          />
-          <Route path="/reviews" component={ReviewsPage} />
-          <Route path="/about" component={AboutPage} />
-          <Route path="/contact" component={ContactPage} />
-        </Switch>
-        <Footer />
-      </BrowserRouter>
-    </ErrorBoundary>
+    React.createElement(ErrorBoundary, null,
+      React.createElement(BrowserRouter, null,
+        React.createElement(Navbar, { cartItems: cartItems }),
+        React.createElement(Switch, null,
+          React.createElement(Route, { exact: true, path: "/", component: HomePage }),
+          React.createElement(Route, {
+            path: "/menu",
+            component: () => React.createElement(MenuPage, { addToCart: addToCart, removeFromCart: removeFromCart, cartItems: cartItems })
+          }),
+          React.createElement(Route, { path: "/promotions", component: PromotionsPage }),
+          React.createElement(Route, {
+            path: "/cart",
+            component: () => React.createElement(CartPage, {
+              cartItems: cartItems,
+              removeFromCart: removeFromCart,
+              taxRate: 0.0925,
+              tipAmount: tipAmount,
+              setTipAmount: setTipAmount,
+              onPay: handlePayment
+            })
+          }),
+          React.createElement(Route, { path: "/reviews", component: ReviewsPage }),
+          React.createElement(Route, { path: "/about", component: AboutPage }),
+          React.createElement(Route, { path: "/contact", component: ContactPage })
+        ),
+        React.createElement(Footer, null)
+      )
+    )
   );
 };
 
 const rootElement = document.getElementById('root');
 const root = createRoot(rootElement);
-root.render(<App />);
+root.render(React.createElement(App));
