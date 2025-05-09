@@ -334,5 +334,7 @@ const App = () => {
   );
 };
 
+export default App;
 const root = createRoot(document.getElementById("root"));
+
 root.render(React.createElement(ErrorBoundary, null, React.createElement(App, null)));
