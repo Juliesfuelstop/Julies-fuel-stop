@@ -1,19 +1,21 @@
 import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 // Fallback component for errors
 const ErrorFallback = ({ error }) => (
-  <div role="alert">
-    <p>Something went wrong:</p>
-    <pre>{error.message}</pre>
-  </div>
+  React.createElement("div", { role: "alert", className: "p-4 text-red-500" },
+    React.createElement("p", null, "Something went wrong:"),
+    React.createElement("pre", null, error.message)
+  )
 );
 
 const Navbar = () => (
-  React.createElement("nav", { className: "bg-gray-800 p-4" },
-    React.createElement("div", { className: "text-2xl font-bold text-white" }, "Julie's Fuel Stop")
+  React.createElement("nav", { className: "bg-gray-800 p-4 flex items-center justify-between" },
+    React.createElement("div", { className: "flex items-center" },
+      React.createElement("img", { src: "/logo.png", alt: "Julie's Fuel Stop Logo", className: "h-10 mr-4" }),
+      React.createElement("div", { className: "text-2xl font-bold text-white" }, "Julie's Fuel Stop")
+    )
   )
 );
 
@@ -64,14 +66,10 @@ const MenuPage = () => {
 };
 
 const App = () => (
-  React.createElement(Router, null,
-    React.createElement("div", { className: "min-h-screen bg-gradient-to-br from-indigo-100 to-gray-100" },
-      React.createElement(ErrorBoundary, { FallbackComponent: ErrorFallback },
-        React.createElement(Navbar, null),
-        React.createElement(Switch, null,
-          React.createElement(Route, { path: "/", component: MenuPage })
-        )
-      )
+  React.createElement("div", { className: "min-h-screen bg-gradient-to-br from-indigo-100 to-gray-100" },
+    React.createElement(ErrorBoundary, { FallbackComponent: ErrorFallback },
+      React.createElement(Navbar, null),
+      React.createElement(MenuPage, null)
     )
   )
 );
