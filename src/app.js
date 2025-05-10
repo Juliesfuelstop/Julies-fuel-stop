@@ -3,12 +3,13 @@ import { createRoot } from 'react-dom/client';
 import { ErrorBoundary } from 'react-error-boundary';
 
 // Fallback component for errors
-const ErrorFallback = ({ error }) => (
-  React.createElement("div", { role: "alert", className: "p-4 text-red-500" },
+const ErrorFallback = ({ error }) => {
+  console.error("Error caught in ErrorBoundary:", error);
+  return React.createElement("div", { role: "alert", className: "p-4 text-red-500" },
     React.createElement("p", null, "Something went wrong:"),
     React.createElement("pre", null, error.message)
-  )
-);
+  );
+};
 
 const Navbar = () => (
   React.createElement("nav", { className: "bg-amber-800 p-4 flex items-center justify-between" },
