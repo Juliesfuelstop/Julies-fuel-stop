@@ -1,7 +1,9 @@
 {
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+  "build": "react-scripts build",
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
     "build:css": "npx tailwindcss -i ./src/styles.css -o ./dist/output.css"
   },
   "devDependencies": {
