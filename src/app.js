@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './App.css';
 
+// Initialize Stripe with your Publishable Key (replace with your key)
+const stripePromise = loadStripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB');
+
 const Navbar = () => {
-  const [cartItems, setCartItems] = useState(0);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
 
   useEffect(() => {
-    const items = JSON.parse(localStorage.getItem('cart')) || [];
-    setCartItems(items.length);
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      setCartItemsCount(cart.length);
+    };
+
+    // Initial load
+    updateCartCount();
+
+    // Listen for storage changes
+    window.addEventListener('storage', updateCartCount);
+    return () => window.removeEventListener('storage', updateCartCount);
   }, []);
 
   return (
@@ -21,7 +35,7 @@ const Navbar = () => {
         <Link to="/menu">Menu</Link>
         <Link to="/promotions">Promotions</Link>
         <Link to="/cart">
-          Cart <span className="badge">{cartItems}</span>
+          Cart <span className="badge">{cartItemsCount}</span>
         </Link>
         <Link to="/reviews">Reviews</Link>
         <Link to="/about">About</Link>
@@ -33,8 +47,11 @@ const Navbar = () => {
 
 const HomePage = () => (
   <div className="content">
+    <div className="welcome-section">
+      <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="welcome-logo" />
+      <h1>WELCOME to JULIE'S FUEL STOP</h1>
+    </div>
     <div className="card">
-      <h1>Welcome to Julie's Fuel Stop</h1>
       <p>Experience the best fuel stop with delicious food and refreshing drinks!</p>
       <Link to="/menu">
         <button className="button">Explore Menu</button>
@@ -211,14 +228,54 @@ const MenuPage = () => {
   );
 };
 
-const PromotionsPage = () => (
-  <div className="content">
-    <div className="card">
-      <h2>Promotions</h2>
-      <p>Get a free drink with any food purchase over $5 this month!</p>
+const CheckoutForm = ({ cartItems, clearCart }) => {
+  const stripe = useStripe();
+  const elements = useElements();
+  const [error, setError] = useState(null);
+  const [processing, setProcessing] = useState(false);
+
+  const handleCheckout = async () => {
+    if (!stripe || !elements) return;
+
+    setProcessing(true);
+    setError(null);
+
+    try {
+      const response = await fetch('https://your-backend-server/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: cartItems }),
+      });
+
+      const { sessionId } = await response.json();
+
+      const { error } = await stripe.redirectToCheckout({ sessionId });
+
+      if (error) {
+        setError(error.message);
+      } else {
+        clearCart(); // Clear cart on successful redirect
+      }
+    } catch (err) {
+      setError('Failed to process payment. Please try again.');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  return (
+    <div>
+      {error && <p className="error">{error}</p>}
+      <button
+        className="button checkout-button"
+        onClick={handleCheckout}
+        disabled={!stripe || processing}
+      >
+        {processing ? 'Processing...' : 'Checkout with Stripe'}
+      </button>
     </div>
-  </div>
-);
+  );
+};
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -242,6 +299,8 @@ const CartPage = () => {
     window.dispatchEvent(new Event('storage'));
   };
 
+  const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
+
   return (
     <div className="content">
       <div className="card">
@@ -257,15 +316,28 @@ const CartPage = () => {
                 </li>
               ))}
             </ul>
+            <p className="total">Total: ${totalPrice.toFixed(2)}</p>
             <button className="button" onClick={clearCart}>
               Clear Cart
             </button>
+            <Elements stripe={stripePromise}>
+              <CheckoutForm cartItems={cartItems} clearCart={clearCart} />
+            </Elements>
           </>
         )}
       </div>
     </div>
   );
 };
+
+const PromotionsPage = () => (
+  <div className="content">
+    <div className="card">
+      <h2>Promotions</h2>
+      <p>Get a free drink with any food purchase over $5 this month!</p>
+    </div>
+  </div>
+);
 
 const ReviewsPage = () => (
   <div className="content">
