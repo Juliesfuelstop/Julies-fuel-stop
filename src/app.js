@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import './App.css';
-
-// Initialize Stripe with your Publishable Key (replace with your key)
-const stripePromise = loadStripe('pk_test_51RG5m3042fybFFGR1wSrYc9nuPu1XduYHudm6CX0hVheMCLLbO1CK4unC9jjGOC1dhxOP1zcBbYhxtJPvxstvFTN00HhhZY5TB');
 
 const Navbar = () => {
   const [cartItemsCount, setCartItemsCount] = useState(0);
@@ -228,55 +223,6 @@ const MenuPage = () => {
   );
 };
 
-const CheckoutForm = ({ cartItems, clearCart }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState(false);
-
-  const handleCheckout = async () => {
-    if (!stripe || !elements) return;
-
-    setProcessing(true);
-    setError(null);
-
-    try {
-      const response = await fetch('https://your-backend-server/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: cartItems }),
-      });
-
-      const { sessionId } = await response.json();
-
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-
-      if (error) {
-        setError(error.message);
-      } else {
-        clearCart(); // Clear cart on successful redirect
-      }
-    } catch (err) {
-      setError('Failed to process payment. Please try again.');
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  return (
-    <div>
-      {error && <p className="error">{error}</p>}
-      <button
-        className="button checkout-button"
-        onClick={handleCheckout}
-        disabled={!stripe || processing}
-      >
-        {processing ? 'Processing...' : 'Checkout with Stripe'}
-      </button>
-    </div>
-  );
-};
-
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
 
@@ -320,9 +266,7 @@ const CartPage = () => {
             <button className="button" onClick={clearCart}>
               Clear Cart
             </button>
-            <Elements stripe={stripePromise}>
-              <CheckoutForm cartItems={cartItems} clearCart={clearCart} />
-            </Elements>
+            <p className="payment-placeholder">Online payment coming soon!</p>
           </>
         )}
       </div>
