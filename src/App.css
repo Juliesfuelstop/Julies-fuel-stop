@@ -1,0 +1,142 @@
+/* App.css */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to bottom, #FFCA28, #F44336); /* Amber to Red gradient */
+  color: #424242;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #FF7043; /* Coral background for navbar */
+  padding: 1rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a {
+  color: white;
+  margin: 0 1rem;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #FFD54F; /* Amber hover effect */
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.logo-img {
+  height: 40px;
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.content {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button {
+  background-color: #FF7043; /* Coral button */
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button:hover {
+  background-color: #F4511E; /* Darker coral on hover */
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #FF7043;
+}
+
+.badge {
+  background-color: #FFD54F; /* Amber badge */
+  color: #424242;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  margin-left: 4px;
+}
+
+/* Tabs and Grid Layout for MenuPage */
+.tabs {
+  display: flex;
+  border-bottom: 2px solid #FF7043;
+  margin-bottom: 1rem;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #424242;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.tab:hover {
+  color: #FF7043;
+}
+
+.tab.active {
+  color: #FF7043;
+  border-bottom: 2px solid #FF7043;
+}
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.menu-item {
+  background: #FFF8E1; /* Light amber background */
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.menu-item:hover {
+  transform: translateY(-3px);
+}
+
+.menu-item h3 {
+  margin: 0 0 0.5rem;
+  color: #F44336; /* Red for item names */
+}
+
+.menu-item p {
+  margin: 0.25rem 0;
+  color: #424242;
+}
