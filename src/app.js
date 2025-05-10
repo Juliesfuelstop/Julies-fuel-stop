@@ -13,7 +13,7 @@ const ErrorFallback = ({ error }) => (
 const Navbar = () => (
   React.createElement("nav", { className: "bg-gray-800 p-4 flex items-center justify-between" },
     React.createElement("div", { className: "flex items-center" },
-      React.createElement("img", { src: "/logo.png", alt: "Julie's Fuel Stop Logo", className: "h-10 mr-4" }),
+      React.createElement("img", { src: "/images/logo.png", alt: "Julie's Fuel Stop Logo", className: "h-10 mr-4" }),
       React.createElement("div", { className: "text-2xl font-bold text-white" }, "Julie's Fuel Stop")
     )
   )
