@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/juliesfuelstop/julies-fuel-stop/static/js/main.5a3469ae.js",
-    "index.html": "/juliesfuelstop/julies-fuel-stop/index.html",
-    "main.5a3469ae.js.map": "/juliesfuelstop/julies-fuel-stop/static/js/main.5a3469ae.js.map"
+    "main.js": "/static/js/main.5a3469ae.js",
+    "index.html": "/index.html",
+    "main.5a3469ae.js.map": "/static/js/main.5a3469ae.js.map"
   },
   "entrypoints": [
     "static/js/main.5a3469ae.js"
