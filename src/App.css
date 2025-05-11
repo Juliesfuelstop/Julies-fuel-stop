@@ -65,6 +65,10 @@
   height: 100px;
 }
 
+.larger-logo {
+  height: 150px; /* Increased logo size for Home page */
+}
+
 .button {
   background-color: #4CAF50;
   color: white;

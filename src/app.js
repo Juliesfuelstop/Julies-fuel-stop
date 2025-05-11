@@ -29,15 +29,15 @@ const Navbar = () => {
         <Link to="/">Home</Link>
         <Link to="/menu">Menu</Link>
         <Link to="/promotions">Promotions</Link>
+        <Link to="/grocery">Grocery</Link>
+        <Link to="/beer">Beer</Link>
+        <Link to="/novelty">Novelty</Link>
         <Link to="/cart">
           Cart <span className="badge">{cartItemsCount}</span>
         </Link>
         <Link to="/reviews">Reviews</Link>
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
-        <Link to="/grocery">Grocery</Link>
-        <Link to="/beer">Beer</Link>
-        <Link to="/novelty">Novelty</Link>
       </div>
     </nav>
   );
@@ -46,10 +46,20 @@ const Navbar = () => {
 const HomePage = () => (
   <div className="content">
     <div className="welcome-section">
-      <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="welcome-logo" />
+      <img src="/images/logo.png" alt="Julie's Fuel Stop Logo" className="welcome-logo larger-logo" />
       <h1>WELCOME to JULIE'S FUEL STOP</h1>
     </div>
     <div className="card">
+      <video
+        className="promo-video"
+        src="/media/home-advertisement.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        Your browser does not support the video tag.
+      </video>
       <p>Experience the best fuel stop with delicious food and refreshing drinks!</p>
       <Link to="/menu">
         <button className="button">Explore Menu</button>
@@ -374,8 +384,9 @@ const ContactPage = () => (
   <div className="content">
     <div className="card">
       <h2>Contact Us</h2>
+      <p>Address: 3522 E Governor John Sevier Hwy, Knoxville, TN 37914</p>
+      <p>Phone: (865) 337-7493</p>
       <p>Email: contact@juliesfuelstop.com</p>
-      <p>Phone: (555) 123-4567</p>
     </div>
   </div>
 );
