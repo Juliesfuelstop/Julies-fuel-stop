@@ -278,7 +278,17 @@ const PromotionsPage = () => (
   <div className="content">
     <div className="card">
       <h2>Promotions</h2>
-      <p>Get a free drink with any food purchase over $5 this month!</p>
+      <video
+        className="promo-video"
+        src="/media/promotions.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+      >
+        Your browser does not support the video tag.
+      </video>
+      <p>Check out our latest promotions in the slideshow above!</p>
     </div>
   </div>
 );
