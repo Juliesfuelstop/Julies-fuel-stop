@@ -297,7 +297,8 @@ const AboutPage = () => (
   <div className="content">
     <div className="card">
       <h2>About Us</h2>
-      <p>Julie's Fuel Stop has been serving travelers since 1995 with quality food and fuel.</p>
+      <img src="/images/fuel-stop.png" alt="Julie's Fuel Stop Location" className="about-image" />
+      <p>Julie's Fuel Stop, located conveniently in Knoxville, Tennessee, is a one-stop-shop offering a wide range of convenience and specialty products. With over 4 decades of experience as Sam and Jerry's Deli and Market, Julie's continues to fulfill diverse needs of the community. From grocery must-haves to satisfying deli delights and refueling options like high-quality gasoline, customers can find what they need and more. Additionally, Julie's Fuel Stop enhances its unique offerings with a smoke shop, beer collection, and novelty items including vapes, certified THC products, providing an enjoyable shopping experience for all.</p>
     </div>
   </div>
 );
