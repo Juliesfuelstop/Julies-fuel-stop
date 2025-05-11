@@ -233,11 +233,22 @@ const MenuPage = () => {
     <div className="content">
       <div className="card">
         <h2>Menu</h2>
+        <div className="menu-header">
+          <p className="disclaimer">
+            CONSUMING RAW OR UNDERCOOKED MEAT, POULTRY, SEAFOOD, OR EGGS MAY INCREASE YOUR RISK OF FOODBORNE ILLNESS ESPECIALLY IF YOU HAVE CERTAIN MEDICAL CONDITIONS.
+          </p>
+          <div className="deli-hours">
+            <p><strong>DELI TIME:</strong></p>
+            <p>MON TO FRIDAY: 4:30AM TO 7:30PM</p>
+            <p>SAT: 6:30AM TO 6PM</p>
+            <p>SUN: 9AM TO 4PM</p>
+          </div>
+        </div>
         <div className="tabs">
           {Object.keys(menuItems).map((tab) => (
             <button
               key={tab}
-              className={`tab ${activeTab === tab ? 'active' : ''}`}
+              className={`tab ${activeTab === tab ? 'active' : ''} ${tab === 'Chicken' ? 'chicken-tab' : ''}`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -247,7 +258,8 @@ const MenuPage = () => {
         <div className="menu-grid">
           {menuItems[activeTab].length > 0 ? (
             menuItems[activeTab].map((item) => (
-              <div key={item.id} className="menu-item">
+              <div key={item.id} className={`menu-item ${activeTab === 'Chicken' ? 'chicken-item' : ''}`}>
+                {item.image && <img src={item.image} alt={item.name} className="menu-image" />}
                 <h3>{item.name}</h3>
                 <p>{item.description}</p>
                 <p>${item.price.toFixed(2)}</p>
