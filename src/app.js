@@ -35,6 +35,9 @@ const Navbar = () => {
         <Link to="/reviews">Reviews</Link>
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
+        <Link to="/grocery">Grocery</Link>
+        <Link to="/beer">Beer</Link>
+        <Link to="/novelty">Novelty</Link>
       </div>
     </nav>
   );
@@ -377,6 +380,33 @@ const ContactPage = () => (
   </div>
 );
 
+const GroceryPage = () => (
+  <div className="content">
+    <div className="card">
+      <h2>Grocery</h2>
+      <p>Explore our wide selection of everyday grocery essentials, from fresh produce to pantry staples. Visit us for all your shopping needs!</p>
+    </div>
+  </div>
+);
+
+const BeerPage = () => (
+  <div className="content">
+    <div className="card">
+      <h2>Beer</h2>
+      <p>Check out our diverse beer collection, featuring local brews and popular brands. Perfect for any occasion!</p>
+    </div>
+  </div>
+);
+
+const NoveltyPage = () => (
+  <div className="content">
+    <div className="card">
+      <h2>Novelty</h2>
+      <p>Discover unique novelty items, including vapes, certified THC products, and more. A fun addition to your shopping experience!</p>
+    </div>
+  </div>
+);
+
 const ErrorBoundary = ({ children }) => {
   const [hasError, setHasError] = useState(false);
 
@@ -416,6 +446,9 @@ const App = () => (
         <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/grocery" element={<GroceryPage />} />
+        <Route path="/beer" element={<BeerPage />} />
+        <Route path="/novelty" element={<NoveltyPage />} />
       </Routes>
     </ErrorBoundary>
   </Router>
