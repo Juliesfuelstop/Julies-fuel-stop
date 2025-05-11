@@ -8,13 +8,10 @@ const Navbar = () => {
   useEffect(() => {
     const updateCartCount = () => {
       const cart = JSON.parse(localStorage.getItem('cart')) || [];
-      setCartItemsCount(cart.length);
+      setCartItemsCount(cart.reduce((total, item) => total + item.quantity, 0));
     };
 
-    // Initial load
     updateCartCount();
-
-    // Listen for storage changes
     window.addEventListener('storage', updateCartCount);
     return () => window.removeEventListener('storage', updateCartCount);
   }, []);
@@ -78,6 +75,7 @@ const MenuPage = () => {
     Chicken: [],
   });
   const [loading, setLoading] = useState(true);
+  const [quantities, setQuantities] = useState({});
 
   useEffect(() => {
     setTimeout(() => {
@@ -231,11 +229,27 @@ const MenuPage = () => {
     }, 1000);
   }, []);
 
+  const handleQuantityChange = (itemId, value) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [itemId]: Math.max(1, parseInt(value) || 1),
+    }));
+  };
+
   const addToCart = (item) => {
+    const quantity = quantities[item.id] || 1;
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cart.push(item);
+    const existingItemIndex = cart.findIndex((cartItem) => cartItem.id === item.id);
+
+    if (existingItemIndex !== -1) {
+      cart[existingItemIndex].quantity += quantity;
+    } else {
+      cart.push({ ...item, quantity });
+    }
+
     localStorage.setItem('cart', JSON.stringify(cart));
     window.dispatchEvent(new Event('storage'));
+    setQuantities((prev) => ({ ...prev, [item.id]: 1 })); // Reset quantity after adding
   };
 
   if (loading) {
@@ -275,7 +289,15 @@ const MenuPage = () => {
                 {item.image && <img src={item.image} alt={item.name} className="menu-image" />}
                 <h3>{item.name}</h3>
                 <p>{item.description}</p>
-                <p>${item.price.toFixed(2)}</p>
+                <div className="quantity-selector">
+                  <label>Qty: </label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={quantities[item.id] || 1}
+                    onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                  />
+                </div>
                 <button className="button" onClick={() => addToCart(item)}>
                   Add to Cart
                 </button>
@@ -312,7 +334,10 @@ const CartPage = () => {
     window.dispatchEvent(new Event('storage'));
   };
 
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price, 0);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const taxRate = 0.0925; // 9.25%
+  const tax = subtotal * taxRate;
+  const total = subtotal + tax;
 
   return (
     <div className="content">
@@ -325,11 +350,13 @@ const CartPage = () => {
             <ul>
               {cartItems.map((item, index) => (
                 <li key={index}>
-                  {item.name} - ${item.price.toFixed(2)}
+                  {item.name} - ${item.price.toFixed(2)} each, qty {item.quantity} = ${(item.price * item.quantity).toFixed(2)}
                 </li>
               ))}
             </ul>
-            <p className="total">Total: ${totalPrice.toFixed(2)}</p>
+            <p className="total">Subtotal: ${subtotal.toFixed(2)}</p>
+            <p className="total">Tax: ${tax.toFixed(2)}</p>
+            <p className="total">Total: ${total.toFixed(2)}</p>
             <button className="button" onClick={clearCart}>
               Clear Cart
             </button>
