@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
+  background-color: #4B2E5A; /* Regal purple for navbar */
   padding: 10px 20px;
   color: white;
 }
@@ -19,7 +19,7 @@
 }
 
 .navbar div a {
-  color: white;
+  color: #FDF6E3; /* Soft cream for navbar links */
   margin: 0 15px;
   text-decoration: none;
 }
@@ -29,7 +29,7 @@
 }
 
 .badge {
-  background-color: red;
+  background-color: #D32F2F; /* Muted red for badge */
   color: white;
   padding: 2px 6px;
   border-radius: 50%;
@@ -38,22 +38,22 @@
 
 .content {
   padding: 20px;
-  background-color: #f0f0f0; /* Darker off-white background for the page */
+  background-color: #FDF6E3; /* Soft cream background for the page */
 }
 
 .card {
-  background: #f5f0e1; /* Soft beige background */
-  border: 2px solid #d4a017; /* Golden border */
+  background: #F9E8C9; /* Slightly darker cream for cards */
+  border: 2px solid #D4A017; /* Golden border */
   padding: 20px;
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15); /* Slightly darker shadow for depth */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
   max-width: 800px;
   margin: 0 auto;
 }
 
 .card h2 {
-  color: #333; /* Darker text for contrast */
-  text-align: center; /* Center-align all h2 headers */
+  color: #2D1B3A; /* Deep charcoal for headers */
+  text-align: center;
 }
 
 .welcome-section {
@@ -66,11 +66,11 @@
 }
 
 .larger-logo {
-  height: 150px; /* Increased logo size for Home page */
+  height: 150px;
 }
 
 .button {
-  background-color: #4CAF50;
+  background-color: #2E8B57; /* Emerald green for buttons */
   color: white;
   padding: 10px 20px;
   border: none;
@@ -79,12 +79,12 @@
 }
 
 .button:hover {
-  background-color: #45a049;
+  background-color: #257A49; /* Darker emerald green on hover */
 }
 
 .loading {
   text-align: center;
-  color: #666;
+  color: #2D1B3A; /* Deep charcoal for loading text */
 }
 
 .tabs {
@@ -97,18 +97,20 @@
   padding: 10px 20px;
   margin: 0 5px;
   border: none;
-  background-color: #f1f1f1;
+  background-color: #E6D5C3; /* Light cream for inactive tabs */
   cursor: pointer;
   border-radius: 5px 5px 0 0;
-  font-weight: bold; /* Bold font for all tabs */
+  font-weight: bold;
+  color: #2D1B3A; /* Deep charcoal for tab text */
 }
 
 .tab.active {
-  background-color: #ddd;
+  background-color: #7B5A8A; /* Lighter purple for active tabs */
+  color: #FDF6E3; /* Soft cream for active tab text */
 }
 
 .chicken-tab.active {
-  background-color: #d4a017; /* Match the golden border color */
+  background-color: #D4A017; /* Gold for active chicken tab */
   color: white;
 }
 
@@ -119,15 +121,15 @@
 }
 
 .menu-item {
-  background: #faf9f5; /* Slightly lighter shade for contrast */
+  background: #FDF6E3; /* Soft cream for menu items */
   padding: 10px;
   border-radius: 5px;
   text-align: center;
 }
 
 .chicken-item {
-  background: #f5f0e1; /* Match the card background */
-  border: 2px solid #d4a017; /* Golden border */
+  background: #F9E8C9; /* Match card background for chicken items */
+  border: 2px solid #D4A017; /* Golden border */
   padding: 15px;
   border-radius: 8px;
 }
@@ -146,28 +148,45 @@
 
 .disclaimer {
   font-size: 12px;
-  color: #d32f2f;
+  color: #D32F2F; /* Muted red for disclaimer */
   font-weight: bold;
   margin-bottom: 10px;
 }
 
 .deli-hours {
   font-size: 14px;
-  color: #333;
+  color: #2D1B3A; /* Deep charcoal for deli hours */
 }
 
 .deli-hours p {
   margin: 5px 0;
 }
 
+.quantity-selector {
+  margin: 10px 0;
+}
+
+.quantity-selector label {
+  margin-right: 5px;
+  color: #2D1B3A; /* Deep charcoal for label */
+}
+
+.quantity-selector input {
+  width: 50px;
+  padding: 5px;
+  border: 1px solid #7B5A8A; /* Lighter purple for input border */
+  border-radius: 3px;
+  text-align: center;
+}
+
 .total {
   font-weight: bold;
   margin-top: 10px;
-  color: #333;
+  color: #2D1B3A; /* Deep charcoal for totals */
 }
 
 .payment-placeholder {
-  color: #666;
+  color: #7B5A8A; /* Lighter purple for placeholder text */
   font-style: italic;
 }
 
