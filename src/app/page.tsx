@@ -8,7 +8,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
 export default function Home() {
-  return (
+  return <h1>Welcome to Julie's Deli and Market</h1>;(
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1">
