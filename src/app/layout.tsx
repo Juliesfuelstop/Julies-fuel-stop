@@ -1,27 +1,21 @@
-import type React from "react"
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
-import { Providers } from "./providers"
+import { CartProvider } from "@/cart-context"; // Matches src/cart-context.ts
+import "@/styles/globals.css";
 
-const inter = Inter({ subsets: ["latin"] })
+export const metadata = {
+  title: "Julie's Fuel Stop",
+  description: "A market and deli experience",
+  generator: "v0.dev"
+};
 
-export const metadata: Metadata = {
-  title: "Julie's Market and Deli",
-  description: "Quality food, groceries, and convenience items with online ordering and delivery",
-    generator: 'v0.dev'
-}
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
+      <body>
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
-  )
+  );
 }
